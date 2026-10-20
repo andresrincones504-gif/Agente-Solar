@@ -1,0 +1,88 @@
+# Nombre de proyecto propio: volumen de MySQL y red separados de la version original
+name: agente_solar_v2
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: agente_solar_v2_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: agente_solar_db
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-proot" ]  # TCP: solo pasa cuando MySQL acepta conexiones reales
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: agente_solar_v2_api
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: agente_solar_db
+      SECRET_KEY: ${SECRET_KEY:-cambiar-en-produccion-2026}
+      OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GEMINI_MODEL: ${GEMINI_MODEL:-gemini-3.5-flash-lite}
+      LOCATION_NAME: ${LOCATION_NAME:-Fonseca, La Guajira}
+      LOCATION_LAT: ${LOCATION_LAT:-10.8858}
+      LOCATION_LON: ${LOCATION_LON:--72.8481}
+      ENVIRONMENT: development
+      WATCHFILES_FORCE_POLLING: "true"
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./app:/app/app
+      - ./scripts:/app/scripts
+      - ./tests:/app/tests
+      - ./pytest.ini:/app/pytest.ini:ro
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app/app
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile.streamlit
+    container_name: agente_solar_v2_streamlit
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      API_BASE_URL: http://api:8000
+      LOCATION_NAME: ${LOCATION_NAME:-Fonseca, La Guajira}
+      LOCATION_LAT: ${LOCATION_LAT:-10.8858}
+      LOCATION_LON: ${LOCATION_LON:--72.8481}
+    ports:
+      - "8503:8501"
+    volumes:
+      - ./streamlit_app:/app/streamlit_app
+    command:
+      - streamlit
+      - run
+      - streamlit_app/Home.py
+      - --server.port=8501
+      - --server.address=0.0.0.0
+      - --server.headless=true
+      - --browser.gatherUsageStats=false
+      - --server.runOnSave=true
+      - --server.fileWatcherType=poll
+
+volumes:
+  mysql_data:

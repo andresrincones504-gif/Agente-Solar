@@ -1,0 +1,29 @@
+{
+  "empresa": "Hotel Solar Fonseca",
+  "nota": "Inventario de ejemplo de un hotel de 20 habitaciones para la vista Mis aparatos en modo demo. Valores del catálogo; suman cerca del 80% del consumo demo, el resto queda como consumo no identificado.",
+  "aparatos": [
+    {"codigo": "aire_12000", "cantidad": 20},
+    {"codigo": "aire_24000", "cantidad": 3},
+    {"codigo": "cuarto_frio", "cantidad": 1},
+    {"codigo": "congelador_horizontal", "cantidad": 2},
+    {"codigo": "nevera_exhibidora", "cantidad": 2},
+    {"codigo": "nevera", "cantidad": 1},
+    {"codigo": "maquina_hielo", "cantidad": 1},
+    {"codigo": "bombillo_led", "cantidad": 120},
+    {"codigo": "tubo_fluorescente", "cantidad": 20},
+    {"codigo": "reflector", "cantidad": 8},
+    {"codigo": "televisor", "cantidad": 22},
+    {"codigo": "lavadora", "cantidad": 3},
+    {"codigo": "secadora", "cantidad": 2},
+    {"codigo": "bomba_agua", "cantidad": 2},
+    {"codigo": "horno_electrico", "cantidad": 1},
+    {"codigo": "freidora", "cantidad": 1},
+    {"codigo": "cafetera", "cantidad": 2},
+    {"codigo": "microondas", "cantidad": 2},
+    {"codigo": "ventilador_industrial", "cantidad": 2},
+    {"codigo": "computador_escritorio", "cantidad": 3},
+    {"codigo": "punto_venta", "cantidad": 2},
+    {"codigo": "router", "cantidad": 3},
+    {"codigo": "camaras", "cantidad": 8}
+  ]
+}

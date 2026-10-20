@@ -1,0 +1,844 @@
+{
+  "version": 1,
+  "nota": "Valores aproximados. horas_uso_dia son horas equivalentes a plena potencia por dia: en equipos con compresor (neveras, aires) ya descuentan el tiempo en que el motor esta apagado.",
+  "aparatos": [
+    {
+      "codigo": "nevera",
+      "nombre": "Nevera",
+      "descripcion": "Nevera con congelador de uso familiar (250 a 400 litros).",
+      "tipo_aparato": "refrigeracion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "finca",
+        "comunidad"
+      ],
+      "potencia_w": 150.0,
+      "horas_uso_dia": 10.0,
+      "palabras_clave": "refrigerador frigorifico heladera nevecon",
+      "fuente": "Rangos de referencia para Colombia (electrorueda.com, 2026)"
+    },
+    {
+      "codigo": "nevera_antigua",
+      "nombre": "Nevera antigua (más de 10 años)",
+      "descripcion": "Nevera vieja o con empaques gastados; consume más que una nueva.",
+      "tipo_aparato": "refrigeracion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "finca",
+        "comunidad"
+      ],
+      "potencia_w": 200.0,
+      "horas_uso_dia": 12.0,
+      "palabras_clave": "refrigerador vieja usada frigorifico",
+      "fuente": "UPME, Primer Balance de Energía Útil, sector residencial"
+    },
+    {
+      "codigo": "congelador_horizontal",
+      "nombre": "Congelador horizontal",
+      "descripcion": "Congelador tipo baúl para carnes, helados, pescado o hielo.",
+      "tipo_aparato": "refrigeracion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "finca",
+        "comunidad"
+      ],
+      "potencia_w": 250.0,
+      "horas_uso_dia": 12.0,
+      "palabras_clave": "congelador baul freezer",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "nevera_exhibidora",
+      "nombre": "Nevera exhibidora de bebidas",
+      "descripcion": "Enfriador vertical con puerta de vidrio para tiendas y negocios.",
+      "tipo_aparato": "refrigeracion",
+      "categorias_entidad": [
+        "negocio",
+        "empresa"
+      ],
+      "potencia_w": 400.0,
+      "horas_uso_dia": 14.0,
+      "palabras_clave": "enfriador vitrina gaseosas cerveza visicooler",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "maquina_hielo",
+      "nombre": "Máquina de hielo",
+      "descripcion": "Fabricadora de hielo para hieleras, restaurantes o venta de pescado.",
+      "tipo_aparato": "refrigeracion",
+      "categorias_entidad": [
+        "negocio",
+        "empresa"
+      ],
+      "potencia_w": 600.0,
+      "horas_uso_dia": 14.0,
+      "palabras_clave": "hielo hielera fabricadora",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "cuarto_frio",
+      "nombre": "Cuarto frío",
+      "descripcion": "Cámara de refrigeración para alimentos, pesca o carnes.",
+      "tipo_aparato": "refrigeracion",
+      "categorias_entidad": [
+        "empresa",
+        "finca"
+      ],
+      "potencia_w": 3000.0,
+      "horas_uso_dia": 12.0,
+      "palabras_clave": "camara frigorifica refrigeracion industrial",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "nevera_vacunas",
+      "nombre": "Nevera de vacunas o medicamentos",
+      "descripcion": "Refrigerador para cadena de frío en puestos de salud o droguerías.",
+      "tipo_aparato": "refrigeracion",
+      "categorias_entidad": [
+        "negocio",
+        "institucion"
+      ],
+      "potencia_w": 100.0,
+      "horas_uso_dia": 12.0,
+      "palabras_clave": "vacunas medicamentos drogueria salud",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "tanque_leche",
+      "nombre": "Tanque de enfriamiento de leche",
+      "descripcion": "Tanque refrigerado para conservar la leche del ordeño.",
+      "tipo_aparato": "refrigeracion",
+      "categorias_entidad": [
+        "finca"
+      ],
+      "potencia_w": 1500.0,
+      "horas_uso_dia": 8.0,
+      "palabras_clave": "leche lecheria ordeño tanque",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "dispensador_agua",
+      "nombre": "Dispensador de agua fría y caliente",
+      "descripcion": "Dispensador de botellón con enfriamiento y calentamiento.",
+      "tipo_aparato": "refrigeracion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion"
+      ],
+      "potencia_w": 500.0,
+      "horas_uso_dia": 3.0,
+      "palabras_clave": "botellon agua fria caliente",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "aire_9000",
+      "nombre": "Aire acondicionado 9.000 BTU",
+      "descripcion": "Mini split para una habitación pequeña.",
+      "tipo_aparato": "climatizacion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "comunidad"
+      ],
+      "potencia_w": 900.0,
+      "horas_uso_dia": 6.0,
+      "palabras_clave": "aire minisplit split clima habitacion",
+      "fuente": "Rangos de referencia para Colombia (electrorueda.com, 2026)"
+    },
+    {
+      "codigo": "aire_12000",
+      "nombre": "Aire acondicionado 12.000 BTU",
+      "descripcion": "Mini split para una habitación grande u oficina pequeña.",
+      "tipo_aparato": "climatizacion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "comunidad"
+      ],
+      "potencia_w": 1200.0,
+      "horas_uso_dia": 6.0,
+      "palabras_clave": "aire minisplit split clima",
+      "fuente": "Rangos de referencia para Colombia (electrorueda.com, 2026)"
+    },
+    {
+      "codigo": "aire_18000",
+      "nombre": "Aire acondicionado 18.000 BTU",
+      "descripcion": "Equipo para salas, oficinas o locales medianos.",
+      "tipo_aparato": "climatizacion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion"
+      ],
+      "potencia_w": 1800.0,
+      "horas_uso_dia": 8.0,
+      "palabras_clave": "aire minisplit split clima local oficina",
+      "fuente": "Rangos de referencia para Colombia (electrorueda.com, 2026)"
+    },
+    {
+      "codigo": "aire_24000",
+      "nombre": "Aire acondicionado 24.000 BTU o más",
+      "descripcion": "Equipo para locales, salones o aulas grandes.",
+      "tipo_aparato": "climatizacion",
+      "categorias_entidad": [
+        "negocio",
+        "empresa",
+        "institucion",
+        "comunidad"
+      ],
+      "potencia_w": 2500.0,
+      "horas_uso_dia": 8.0,
+      "palabras_clave": "aire central salon aula",
+      "fuente": "El Colombiano con ficha de consumo de EPM (abril 2024)"
+    },
+    {
+      "codigo": "aire_ventana",
+      "nombre": "Aire acondicionado de ventana",
+      "descripcion": "Equipo de ventana, por lo general antiguo y menos eficiente.",
+      "tipo_aparato": "climatizacion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "institucion"
+      ],
+      "potencia_w": 1500.0,
+      "horas_uso_dia": 6.0,
+      "palabras_clave": "aire ventana clima viejo",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "ventilador",
+      "nombre": "Ventilador de pie o de mesa",
+      "descripcion": "Ventilador doméstico de aspas.",
+      "tipo_aparato": "climatizacion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "finca",
+        "comunidad"
+      ],
+      "potencia_w": 60.0,
+      "horas_uso_dia": 10.0,
+      "palabras_clave": "abanico ventilador pedestal mesa",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "ventilador_techo",
+      "nombre": "Ventilador de techo",
+      "descripcion": "Ventilador fijo de techo.",
+      "tipo_aparato": "climatizacion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "institucion",
+        "comunidad"
+      ],
+      "potencia_w": 75.0,
+      "horas_uso_dia": 10.0,
+      "palabras_clave": "abanico techo",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "ventilador_industrial",
+      "nombre": "Ventilador grande o industrial",
+      "descripcion": "Ventilador de alto caudal para locales, bodegas o galpones.",
+      "tipo_aparato": "climatizacion",
+      "categorias_entidad": [
+        "negocio",
+        "empresa",
+        "institucion",
+        "finca"
+      ],
+      "potencia_w": 200.0,
+      "horas_uso_dia": 12.0,
+      "palabras_clave": "abanico industrial galpon bodega",
+      "fuente": "El Colombiano con ficha de consumo de EPM (abril 2024)"
+    },
+    {
+      "codigo": "bombillo_led",
+      "nombre": "Bombillo LED",
+      "descripcion": "Bombillo LED de 9 W, equivalente a uno incandescente de 60 W.",
+      "tipo_aparato": "iluminacion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "finca",
+        "comunidad"
+      ],
+      "potencia_w": 9.0,
+      "horas_uso_dia": 4.0,
+      "palabras_clave": "foco luz bombilla led",
+      "fuente": "UPME, Primer Balance de Energía Útil, sector residencial"
+    },
+    {
+      "codigo": "bombillo_ahorrador",
+      "nombre": "Bombillo ahorrador",
+      "descripcion": "Bombillo fluorescente compacto (espiral).",
+      "tipo_aparato": "iluminacion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "finca",
+        "comunidad"
+      ],
+      "potencia_w": 20.0,
+      "horas_uso_dia": 4.0,
+      "palabras_clave": "foco luz espiral fluorescente compacto",
+      "fuente": "UPME, Primer Balance de Energía Útil, sector residencial"
+    },
+    {
+      "codigo": "bombillo_incandescente",
+      "nombre": "Bombillo incandescente",
+      "descripcion": "Bombillo de filamento tradicional; el que más consume.",
+      "tipo_aparato": "iluminacion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "finca",
+        "comunidad"
+      ],
+      "potencia_w": 60.0,
+      "horas_uso_dia": 4.0,
+      "palabras_clave": "foco luz bombilla tradicional",
+      "fuente": "UPME, Primer Balance de Energía Útil, sector residencial"
+    },
+    {
+      "codigo": "tubo_fluorescente",
+      "nombre": "Tubo fluorescente o panel LED",
+      "descripcion": "Iluminación de oficina, aula o local comercial.",
+      "tipo_aparato": "iluminacion",
+      "categorias_entidad": [
+        "negocio",
+        "empresa",
+        "institucion"
+      ],
+      "potencia_w": 40.0,
+      "horas_uso_dia": 10.0,
+      "palabras_clave": "lampara tubo panel oficina",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "reflector",
+      "nombre": "Reflector exterior",
+      "descripcion": "Reflector LED para patios, fachadas, canchas o corrales.",
+      "tipo_aparato": "iluminacion",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "finca",
+        "comunidad"
+      ],
+      "potencia_w": 50.0,
+      "horas_uso_dia": 12.0,
+      "palabras_clave": "reflector lampara exterior cancha patio",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "microondas",
+      "nombre": "Horno microondas",
+      "descripcion": "Horno microondas para calentar alimentos.",
+      "tipo_aparato": "cocina",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion"
+      ],
+      "potencia_w": 1000.0,
+      "horas_uso_dia": 0.3,
+      "palabras_clave": "microondas horno",
+      "fuente": "Rangos de referencia para Colombia (electrorueda.com, 2026)"
+    },
+    {
+      "codigo": "licuadora",
+      "nombre": "Licuadora",
+      "descripcion": "Licuadora de cocina.",
+      "tipo_aparato": "cocina",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "finca",
+        "comunidad"
+      ],
+      "potencia_w": 400.0,
+      "horas_uso_dia": 0.2,
+      "palabras_clave": "licuadora batidora jugos",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "olla_arrocera",
+      "nombre": "Olla arrocera",
+      "descripcion": "Olla eléctrica para arroz.",
+      "tipo_aparato": "cocina",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "institucion",
+        "comunidad"
+      ],
+      "potencia_w": 700.0,
+      "horas_uso_dia": 0.5,
+      "palabras_clave": "arrocera olla arroz",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "estufa_electrica",
+      "nombre": "Estufa eléctrica",
+      "descripcion": "Estufa o fogón eléctrico, por hornilla en uso.",
+      "tipo_aparato": "cocina",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "institucion"
+      ],
+      "potencia_w": 1500.0,
+      "horas_uso_dia": 1.5,
+      "palabras_clave": "estufa fogon hornilla cocina electrica",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "horno_electrico",
+      "nombre": "Horno eléctrico",
+      "descripcion": "Horno eléctrico de panadería, pizzería o cocina.",
+      "tipo_aparato": "cocina",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa"
+      ],
+      "potencia_w": 2000.0,
+      "horas_uso_dia": 1.0,
+      "palabras_clave": "horno panaderia pizza",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "freidora",
+      "nombre": "Freidora eléctrica",
+      "descripcion": "Freidora de aceite para restaurantes o comidas rápidas.",
+      "tipo_aparato": "cocina",
+      "categorias_entidad": [
+        "negocio",
+        "empresa"
+      ],
+      "potencia_w": 2000.0,
+      "horas_uso_dia": 2.0,
+      "palabras_clave": "freidora frituras comidas rapidas",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "cafetera",
+      "nombre": "Cafetera eléctrica",
+      "descripcion": "Cafetera de goteo o greca.",
+      "tipo_aparato": "cocina",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion"
+      ],
+      "potencia_w": 800.0,
+      "horas_uso_dia": 1.0,
+      "palabras_clave": "cafe greca tinto",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "lavadora",
+      "nombre": "Lavadora",
+      "descripcion": "Lavadora automática o semiautomática, un ciclo diario.",
+      "tipo_aparato": "lavado",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "comunidad"
+      ],
+      "potencia_w": 500.0,
+      "horas_uso_dia": 1.0,
+      "palabras_clave": "lavadora ropa",
+      "fuente": "Rangos de referencia para Colombia (electrorueda.com, 2026)"
+    },
+    {
+      "codigo": "secadora",
+      "nombre": "Secadora de ropa",
+      "descripcion": "Secadora eléctrica de tambor.",
+      "tipo_aparato": "lavado",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa"
+      ],
+      "potencia_w": 2500.0,
+      "horas_uso_dia": 0.5,
+      "palabras_clave": "secadora ropa",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "plancha",
+      "nombre": "Plancha de ropa",
+      "descripcion": "Plancha eléctrica para ropa.",
+      "tipo_aparato": "lavado",
+      "categorias_entidad": [
+        "hogar",
+        "negocio"
+      ],
+      "potencia_w": 1200.0,
+      "horas_uso_dia": 0.5,
+      "palabras_clave": "plancha ropa",
+      "fuente": "El Colombiano con ficha de consumo de EPM (abril 2024)"
+    },
+    {
+      "codigo": "televisor",
+      "nombre": "Televisor LED",
+      "descripcion": "Televisor LED de 32 a 50 pulgadas.",
+      "tipo_aparato": "entretenimiento",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "institucion",
+        "comunidad"
+      ],
+      "potencia_w": 80.0,
+      "horas_uso_dia": 5.0,
+      "palabras_clave": "tv tele televisor pantalla",
+      "fuente": "Rangos de referencia para Colombia (electrorueda.com, 2026)"
+    },
+    {
+      "codigo": "decodificador",
+      "nombre": "Decodificador o TV box",
+      "descripcion": "Decodificador de cable o caja de streaming, encendido todo el día.",
+      "tipo_aparato": "entretenimiento",
+      "categorias_entidad": [
+        "hogar",
+        "negocio"
+      ],
+      "potencia_w": 15.0,
+      "horas_uso_dia": 24.0,
+      "palabras_clave": "deco cable tvbox",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "equipo_sonido",
+      "nombre": "Equipo de sonido o parlante",
+      "descripcion": "Equipo de sonido, minicomponente o parlante grande.",
+      "tipo_aparato": "entretenimiento",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "comunidad"
+      ],
+      "potencia_w": 100.0,
+      "horas_uso_dia": 2.0,
+      "palabras_clave": "sonido parlante minicomponente picó",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "consola",
+      "nombre": "Consola de videojuegos",
+      "descripcion": "Consola de videojuegos de sobremesa.",
+      "tipo_aparato": "entretenimiento",
+      "categorias_entidad": [
+        "hogar"
+      ],
+      "potencia_w": 150.0,
+      "horas_uso_dia": 2.0,
+      "palabras_clave": "play xbox nintendo videojuegos",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "secador_cabello",
+      "nombre": "Secador de cabello",
+      "descripcion": "Secador de pelo de mano.",
+      "tipo_aparato": "cuidado_personal",
+      "categorias_entidad": [
+        "hogar",
+        "negocio"
+      ],
+      "potencia_w": 1800.0,
+      "horas_uso_dia": 0.2,
+      "palabras_clave": "secador pelo cabello peluqueria",
+      "fuente": "El Colombiano con ficha de consumo de EPM (abril 2024)"
+    },
+    {
+      "codigo": "ducha_electrica",
+      "nombre": "Ducha eléctrica",
+      "descripcion": "Ducha con resistencia para calentar el agua.",
+      "tipo_aparato": "cuidado_personal",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "institucion"
+      ],
+      "potencia_w": 3500.0,
+      "horas_uso_dia": 0.5,
+      "palabras_clave": "ducha regadera calentador agua",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "computador_escritorio",
+      "nombre": "Computador de escritorio",
+      "descripcion": "Torre con monitor LCD.",
+      "tipo_aparato": "oficina",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion"
+      ],
+      "potencia_w": 150.0,
+      "horas_uso_dia": 8.0,
+      "palabras_clave": "pc computador escritorio torre monitor",
+      "fuente": "UPME, Primer Balance de Energía Útil, sector residencial"
+    },
+    {
+      "codigo": "portatil",
+      "nombre": "Computador portátil",
+      "descripcion": "Portátil o laptop.",
+      "tipo_aparato": "oficina",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "finca",
+        "comunidad"
+      ],
+      "potencia_w": 60.0,
+      "horas_uso_dia": 6.0,
+      "palabras_clave": "laptop portatil",
+      "fuente": "Rangos de referencia para Colombia (electrorueda.com, 2026)"
+    },
+    {
+      "codigo": "router",
+      "nombre": "Router o módem de internet",
+      "descripcion": "Router wifi encendido todo el día.",
+      "tipo_aparato": "oficina",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "comunidad"
+      ],
+      "potencia_w": 10.0,
+      "horas_uso_dia": 24.0,
+      "palabras_clave": "wifi internet modem router",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "impresora",
+      "nombre": "Impresora",
+      "descripcion": "Impresora láser o de tinta.",
+      "tipo_aparato": "oficina",
+      "categorias_entidad": [
+        "negocio",
+        "empresa",
+        "institucion"
+      ],
+      "potencia_w": 50.0,
+      "horas_uso_dia": 2.0,
+      "palabras_clave": "impresora fotocopiadora",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "punto_venta",
+      "nombre": "Caja registradora o punto de venta",
+      "descripcion": "Computador o caja de punto de venta con datáfono.",
+      "tipo_aparato": "oficina",
+      "categorias_entidad": [
+        "negocio",
+        "empresa"
+      ],
+      "potencia_w": 60.0,
+      "horas_uso_dia": 12.0,
+      "palabras_clave": "caja pos datafono registradora",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "camaras",
+      "nombre": "Cámaras de seguridad",
+      "descripcion": "DVR con cámaras de vigilancia encendido todo el día.",
+      "tipo_aparato": "oficina",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "comunidad"
+      ],
+      "potencia_w": 40.0,
+      "horas_uso_dia": 24.0,
+      "palabras_clave": "camaras dvr vigilancia seguridad",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "proyector",
+      "nombre": "Video beam o proyector",
+      "descripcion": "Proyector para aulas, reuniones o eventos.",
+      "tipo_aparato": "oficina",
+      "categorias_entidad": [
+        "empresa",
+        "institucion",
+        "comunidad"
+      ],
+      "potencia_w": 250.0,
+      "horas_uso_dia": 3.0,
+      "palabras_clave": "videobeam proyector",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "cargador_celular",
+      "nombre": "Cargador de celular",
+      "descripcion": "Cargador de teléfono o tableta.",
+      "tipo_aparato": "oficina",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "finca",
+        "comunidad"
+      ],
+      "potencia_w": 10.0,
+      "horas_uso_dia": 3.0,
+      "palabras_clave": "celular cargador telefono tablet",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "bomba_agua",
+      "nombre": "Bomba de agua (1 HP)",
+      "descripcion": "Bomba para subir agua al tanque o dar presión.",
+      "tipo_aparato": "bombas_motores",
+      "categorias_entidad": [
+        "hogar",
+        "negocio",
+        "empresa",
+        "institucion",
+        "finca",
+        "comunidad"
+      ],
+      "potencia_w": 750.0,
+      "horas_uso_dia": 1.0,
+      "palabras_clave": "motobomba bomba agua tanque presion",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "bomba_riego",
+      "nombre": "Bomba de riego (2 HP)",
+      "descripcion": "Bomba para riego de cultivos o abrevaderos.",
+      "tipo_aparato": "bombas_motores",
+      "categorias_entidad": [
+        "finca"
+      ],
+      "potencia_w": 1500.0,
+      "horas_uso_dia": 3.0,
+      "palabras_clave": "riego bomba pozo motobomba",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "ordenadora",
+      "nombre": "Ordeñadora mecánica",
+      "descripcion": "Equipo de ordeño con bomba de vacío.",
+      "tipo_aparato": "bombas_motores",
+      "categorias_entidad": [
+        "finca"
+      ],
+      "potencia_w": 750.0,
+      "horas_uso_dia": 2.0,
+      "palabras_clave": "ordeño ordeñadora leche vacio",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "molino",
+      "nombre": "Molino eléctrico",
+      "descripcion": "Molino para maíz, café u otros granos.",
+      "tipo_aparato": "bombas_motores",
+      "categorias_entidad": [
+        "negocio",
+        "finca"
+      ],
+      "potencia_w": 1100.0,
+      "horas_uso_dia": 1.0,
+      "palabras_clave": "molino maiz cafe granos",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "cerca_electrica",
+      "nombre": "Cerca eléctrica",
+      "descripcion": "Impulsor de cerca eléctrica para potreros.",
+      "tipo_aparato": "bombas_motores",
+      "categorias_entidad": [
+        "finca"
+      ],
+      "potencia_w": 10.0,
+      "horas_uso_dia": 24.0,
+      "palabras_clave": "cerca impulsor potrero ganado",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "compresor",
+      "nombre": "Compresor de aire",
+      "descripcion": "Compresor para talleres, montallantas o pintura.",
+      "tipo_aparato": "bombas_motores",
+      "categorias_entidad": [
+        "negocio",
+        "empresa"
+      ],
+      "potencia_w": 1500.0,
+      "horas_uso_dia": 1.0,
+      "palabras_clave": "compresor aire taller montallantas",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "herramientas",
+      "nombre": "Herramientas eléctricas",
+      "descripcion": "Taladro, pulidora, sierra u otras herramientas de taller.",
+      "tipo_aparato": "bombas_motores",
+      "categorias_entidad": [
+        "negocio",
+        "empresa",
+        "finca"
+      ],
+      "potencia_w": 800.0,
+      "horas_uso_dia": 1.0,
+      "palabras_clave": "taladro pulidora sierra taller",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    },
+    {
+      "codigo": "soldador",
+      "nombre": "Soldador eléctrico",
+      "descripcion": "Equipo de soldadura de arco.",
+      "tipo_aparato": "bombas_motores",
+      "categorias_entidad": [
+        "negocio",
+        "empresa"
+      ],
+      "potencia_w": 4000.0,
+      "horas_uso_dia": 1.0,
+      "palabras_clave": "soldadura soldador ornamentacion",
+      "fuente": "Estimación de referencia (valor típico de placa); ajustar con la etiqueta del equipo"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "umbral_consumo_diario_kwh": 400.0,
+  "umbral_bateria_baja_pct": 20.0,
+  "umbral_radiacion_baja": 2.5,
+  "notificar_email": false,
+  "notificar_dashboard": true
+}
