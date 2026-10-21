@@ -21,7 +21,7 @@ from design import (
 )
 from registro import render_registro
 from ubicacion import CIUDAD
-from ui import _hide_pages_by_user, go_to_login, render_escenario
+from ui import _hide_pages_by_user, go_to_login, render_escenario, render_sidebar_autenticado
 
 
 # Mensajes del motor de recomendaciones según su estado (ver GET /ia/status)
@@ -125,19 +125,12 @@ render_hero(
     tone="brand",
 )
 
-with st.sidebar:
-    render_sidebar_brand("Agente Solar", "Acceso y navegacion")
-    if is_authenticated():
-        user = get_current_user()
-        if user:
-            st.success(user.get("full_name", "Usuario"))
-            st.caption(user.get("email", ""))
-        render_escenario(user)
-
-        if st.button("Cerrar sesion", use_container_width=True):
-            logout()
-            go_to_login()
-    else:
+if is_authenticated():
+    # Mismo menú lateral que el resto de pantallas
+    render_sidebar_autenticado(get_current_user())
+else:
+    with st.sidebar:
+        render_sidebar_brand("Ka’i", "Acceso y navegación")
         st.info("Inicia sesion para continuar.")
 
 if not is_authenticated():

@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import json
 from html import escape
 from urllib.parse import quote
 
 import streamlit as st
+import streamlit.components.v1 as components
 
 
 PALETTE = {
@@ -31,6 +33,15 @@ TONE_MAP = {
     "success": (PALETTE["success"], "#154C3A"),
     "warning": (PALETTE["warning"], "#5A4116"),
     "danger": (PALETTE["danger"], "#5A231F"),
+}
+
+# Hero "sólido" (prototipo Mi día): color plano con un leve degradado
+TONE_SOLIDO = {
+    "brand": ("#2A9580", "#1F7767"),
+    "info": ("#3E83BA", "#2F6896"),
+    "success": ("#2E9C6E", "#237D58"),
+    "warning": ("#C99A30", "#B58623"),
+    "danger": ("#B9554C", "#9A433B"),
 }
 
 ICON_PATHS = {
@@ -70,9 +81,29 @@ def render_html_block(html: str) -> None:
         st.markdown(html, unsafe_allow_html=True)
 
 
+def _fijar_css_en_pagina(css: str) -> None:
+    """Copia los estilos al <head> de la página para que sigan puestos al cambiar de pantalla.
+
+    Al cambiar de pantalla Streamlit borra todo lo de la pantalla anterior antes de dibujar
+    la nueva, incluidos los <style> que van como elemento. Durante ese instante la app se
+    veía sin estilos (otro fondo, el menú por defecto) y luego "saltaba". La copia en <head>
+    no la toca Streamlit, así que el fondo y el menú se quedan quietos entre pantallas.
+    """
+    components.html(
+        "<script>"
+        "const doc = window.parent.document;"
+        "let tag = doc.getElementById('kai-estilos');"
+        "if (!tag) { tag = doc.createElement('style'); tag.id = 'kai-estilos'; doc.head.appendChild(tag); }"
+        f"const css = {json.dumps(css)};"
+        "if (tag.textContent !== css) { tag.textContent = css; }"
+        "</script>",
+        height=0,
+    )
+
+
 def inject_css() -> None:
     """Inject global design tokens and component styles."""
-    inject_style_block(
+    css = (
         f"""
         :root {{
             --bg: {PALETTE["bg"]};
@@ -384,8 +415,299 @@ def inject_css() -> None:
     color: #FFFFFF;
     opacity: 0.96;
 }}
+
+/* ---------- Menú lateral (prototipo Ka'i) ---------- */
+[data-testid="stSidebar"][aria-expanded="true"] {{
+    width: 264px !important;
+    min-width: 264px !important;
+    max-width: 264px !important;
+}}
+[data-testid="stSidebarContent"] {{
+    display: flex;
+    flex-direction: column;
+}}
+[data-testid="stSidebarUserContent"] {{
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+    padding: 0 1rem 1.25rem;
+}}
+[data-testid="stSidebarUserContent"] > div,
+[data-testid="stSidebarUserContent"] > div > [data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="stSidebarUserContent"] > div > [data-testid="stVerticalBlockBorderWrapper"] > div {{
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: column;
+}}
+[data-testid="stSidebarUserContent"] > div > [data-testid="stVerticalBlockBorderWrapper"] > div > [data-testid="stVerticalBlock"] {{
+    flex: 1 0 auto;
+}}
+[data-testid="stVerticalBlock"]:has(> [data-testid="element-container"] .ag-nav-label) {{
+    gap: 0.2rem;
+}}
+.ag-nav-label {{
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 0.8rem 0.6rem;
+}}
+.ag-nav-item {{
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.8rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-size: 0.92rem;
+    line-height: 1.35;
+    color: var(--text);
+}}
+.ag-nav-item--activo {{
+    background: rgba(47, 163, 138, 0.12);
+    border: 1px solid rgba(47, 163, 138, 0.5);
+    font-weight: 600;
+    box-shadow: inset 0 0 18px rgba(47, 163, 138, 0.10);
+}}
+.ag-nav-dot {{
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 0 3px rgba(57, 185, 130, 0.18);
+    flex-shrink: 0;
+}}
+[data-testid="stSidebar"] [data-testid="stPageLink-NavLink"] {{
+    padding: 0.45rem 0.8rem;
+    line-height: 1.35;
+    margin: 0;
+    border-radius: 10px;
+    border: 1px solid transparent;
+}}
+[data-testid="stSidebar"] [data-testid="stPageLink-NavLink"]:hover {{
+    background: rgba(234, 242, 246, 0.05);
+}}
+[data-testid="stSidebar"] [data-testid="stPageLink-NavLink"] p,
+[data-testid="stSidebar"] [data-testid="stPageLink-NavLink"] span {{
+    font-size: 0.92rem;
+    line-height: 1.35;
+    margin: 0;
+    color: #C5D3DA;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-side-bottom) {{
+    margin-top: auto;
+    padding-top: 1.5rem;
+}}
+[data-testid="stVerticalBlock"]:has(> [data-testid="element-container"] .ag-side-bottom) {{
+    gap: 0.75rem;
+}}
+.ag-side-bottom {{
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+}}
+.ag-side-brand {{
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}}
+.ag-side-brand__icon {{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 10px;
+    background: rgba(47, 163, 138, 0.10);
+    border: 1px solid rgba(47, 163, 138, 0.35);
+    flex-shrink: 0;
+}}
+.ag-side-brand__name {{
+    font-weight: 700;
+    font-size: 0.98rem;
+    color: var(--text);
+}}
+.ag-side-brand__caption {{
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.3;
+}}
+.ag-user-card {{
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0.75rem;
+    border-radius: 12px;
+    background: rgba(47, 163, 138, 0.08);
+    border: 1px solid rgba(47, 163, 138, 0.35);
+}}
+.ag-user-card__avatar {{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    border: 1px solid rgba(47, 163, 138, 0.6);
+    background: rgba(47, 163, 138, 0.14);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text);
+    flex-shrink: 0;
+}}
+.ag-user-card__text {{
+    min-width: 0;
+}}
+.ag-user-card__name {{
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}}
+.ag-user-card__mail {{
+    font-size: 0.76rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}}
+[data-testid="stVerticalBlock"]:has(> [data-testid="element-container"] .ag-side-bottom) .stButton button {{
+    background: #9B2C2C;
+    border: 1px solid #9B2C2C;
+    color: #FFFFFF;
+    border-radius: 10px;
+    min-height: 2.6rem;
+}}
+[data-testid="stVerticalBlock"]:has(> [data-testid="element-container"] .ag-side-bottom) .stButton button:hover {{
+    background: #B23A3A;
+    border-color: #B23A3A;
+    color: #FFFFFF;
+}}
+
+/* ---------- Mi día (prototipo) ---------- */
+.ag-hero--solido {{
+    border-radius: 16px;
+    padding: 1.5rem 1.6rem;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+}}
+.ag-hero--solido .ag-hero__eyebrow .ag-icon {{
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+}}
+.ag-hero--solido .ag-hero__title {{
+    margin-top: 0.7rem;
+    font-size: 1.75rem;
+}}
+.ag-hero--solido .ag-hero__subtitle {{
+    font-size: 0.98rem;
+    max-width: 860px;
+}}
+.ag-hero--solido .ag-hero__expand summary {{
+    border-radius: 10px;
+}}
+.ag-icon--round {{
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+}}
+.ag-tile__top {{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.8rem;
+    margin-bottom: 0.55rem;
+}}
+.ag-tile__title {{
+    font-size: 0.98rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--text);
+}}
+.ag-tile__body {{
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.55;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-tile) {{
+    background: linear-gradient(180deg, rgba(16, 31, 41, 0.96), rgba(12, 24, 33, 0.96));
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
+    padding: 1.1rem 1.15rem 1.15rem !important;
+    height: 100%;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-tile) > div {{
+    height: 100%;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-tile) > div > [data-testid="stVerticalBlock"] {{
+    height: 100%;
+    gap: 0.9rem;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-tile) > div > [data-testid="stVerticalBlock"] > [data-testid="element-container"]:has(.stButton) {{
+    margin-top: auto;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-tile) .stButton button {{
+    background: #47535B;
+    border: 1px solid #47535B;
+    color: #FFFFFF;
+    border-radius: 8px;
+    min-height: 2.45rem;
+    font-weight: 600;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-tile) .stButton button:hover {{
+    background: var(--brand-dark);
+    border-color: var(--brand-dark);
+    color: #FFFFFF;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-tile) .stButton button p {{
+    font-size: 0.88rem;
+}}
+[data-testid="column"]:has(.ag-tile) > [data-testid="stVerticalBlockBorderWrapper"],
+[data-testid="column"]:has(.ag-tile) > [data-testid="stVerticalBlockBorderWrapper"] > div,
+[data-testid="column"]:has(.ag-tile) > [data-testid="stVerticalBlockBorderWrapper"] > div > [data-testid="stVerticalBlock"] {{
+    height: 100%;
+}}
+
+/* ---------- Cambio de pantalla suave ---------- */
+/* El menú automático de Streamlit se reemplaza por el propio (ui.render_menu) */
+[data-testid="stSidebarNav"] {{
+    display: none !important;
+}}
+/* El iframe que fija los estilos no ocupa espacio */
+[data-testid="element-container"]:has(> iframe[title="st.iframe"][height="0"]) {{
+    position: absolute !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+}}
+@keyframes kaiAparecer {{
+    from {{ opacity: 0; transform: translateY(6px); }}
+    to {{ opacity: 1; transform: none; }}
+}}
+@keyframes kaiAparecerSuave {{
+    from {{ opacity: 0; }}
+    to {{ opacity: 1; }}
+}}
+[data-testid="stAppViewBlockContainer"] > [data-testid="stVerticalBlockBorderWrapper"] > div > [data-testid="stVerticalBlock"] > * {{
+    animation: kaiAparecer 0.35s ease-out both;
+}}
+[data-testid="stSidebarUserContent"] > div > [data-testid="stVerticalBlockBorderWrapper"] > div > [data-testid="stVerticalBlock"] > * {{
+    animation: kaiAparecerSuave 0.25s ease-out both;
+}}
+@media (prefers-reduced-motion: reduce) {{
+    [data-testid="stAppViewBlockContainer"] *,
+    [data-testid="stSidebarUserContent"] * {{
+        animation: none !important;
+    }}
+}}
         """
     )
+    inject_style_block(css)
+    _fijar_css_en_pagina(css)
 
 
 def icon_svg(name: str, size: int = 20, color: str = "currentColor") -> str:
@@ -426,13 +748,16 @@ def render_spacer() -> None:
     render_html_block('<div class="ag-spacer"></div>')
 
 
-def render_section_header(title: str, icon: str = "chart", caption: str | None = None) -> None:
+def render_section_header(
+    title: str, icon: str = "chart", caption: str | None = None, *, round_icon: bool = False
+) -> None:
     """Render a compact section heading."""
     caption_html = f'<div class="ag-caption">{escape(caption)}</div>' if caption else ""
+    icon_class = "ag-icon ag-icon--card ag-icon--round" if round_icon else "ag-icon ag-icon--card"
     render_html_block(
         f"""
         <div class="ag-section-head">
-            <div class="ag-icon ag-icon--card" style="--icon-color: {PALETTE["brand"]};">
+            <div class="{icon_class}" style="--icon-color: {PALETTE["brand"]};">
                 {icon_svg(icon, 18, PALETTE["brand"])}
             </div>
             <div>
@@ -452,9 +777,16 @@ def render_hero(
     eyebrow: str = "",
     tone: str = "brand",
     expandable_text: str | None = None,
+    variant: str = "degradado",
 ) -> None:
-    """Render the main page hero, con desglose opcional integrado."""
-    tone_start, tone_end = TONE_MAP.get(tone, TONE_MAP["brand"])
+    """Render the main page hero, con desglose opcional integrado.
+
+    variant="solido" usa el color plano del prototipo de Mi día.
+    """
+    solido = variant == "solido"
+    tonos = TONE_SOLIDO if solido else TONE_MAP
+    tone_start, tone_end = tonos.get(tone, tonos["brand"])
+    hero_class = "ag-hero ag-hero--solido" if solido else "ag-hero"
 
     expand_html = ""
     if expandable_text:
@@ -467,7 +799,7 @@ def render_hero(
 
     render_html_block(
         f"""
-        <div class="ag-hero" style="--tone-start: {tone_start}; --tone-end: {tone_end};">
+        <div class="{hero_class}" style="--tone-start: {tone_start}; --tone-end: {tone_end};">
             <div class="ag-hero__eyebrow">
                 <span class="ag-icon">{icon_svg(icon, 18, "#FFFFFF")}</span>
                 <span>{escape(eyebrow)}</span>
@@ -513,6 +845,30 @@ def render_card(
             {value_html}
             {body_html}
             {action_html}
+        </div>
+        """
+    )
+
+
+def render_tile(title: str, body: str = "", *, icon: str = "chart", tone: str = "brand") -> None:
+    """Contenido de una tarjeta del prototipo: título, ícono redondo y texto.
+
+    Va dentro de st.container(border=True); la clase .ag-tile le da el estilo al
+    contenedor y deja el botón que se ponga debajo pegado al fondo de la tarjeta.
+    """
+    color = TONE_MAP.get(tone, TONE_MAP["brand"])[0]
+    body_html = f'<div class="ag-tile__body">{escape(body)}</div>' if body else ""
+    render_html_block(
+        f"""
+        <div class="ag-tile">
+            <div class="ag-tile__top">
+                <div class="ag-tile__title">{escape(title)}</div>
+                <span class="ag-icon ag-icon--card ag-icon--round"
+                      style="--icon-color: {color}; background: {color}1F; border-color: {color}66;">
+                    {icon_svg(icon, 16, color)}
+                </span>
+            </div>
+            {body_html}
         </div>
         """
     )

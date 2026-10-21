@@ -15,7 +15,7 @@ from app.schemas.schemas import (
     EstadisticasAparatosResponse,
 )
 from app.services.aparatos import calcular_estadisticas, crear_aparatos, filtrar_catalogo
-from app.services.contexto_energetico import dimensionar_sistema
+from app.services.contexto_energetico import avisos_aparatos, dimensionar_sistema, resumen_inventario
 
 router = APIRouter(tags=["Aparatos"])
 
@@ -141,3 +141,14 @@ def dimensionamiento_solar(
     """Paneles (kWp) y batería (kWh) sugeridos según el consumo real o el inventario de aparatos."""
     empresa = _empresa_con_acceso(db, current_user, empresa_id)
     return dimensionar_sistema(db, empresa)
+
+
+@router.get("/empresas/{empresa_id}/aparatos/avisos")
+def avisos_de_aparatos(
+    empresa_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Avisos sobre el inventario: la factura no cuadra con los aparatos o uno concentra el consumo."""
+    empresa = _empresa_con_acceso(db, current_user, empresa_id)
+    return avisos_aparatos(resumen_inventario(db, empresa))

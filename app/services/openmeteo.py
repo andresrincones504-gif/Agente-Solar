@@ -50,6 +50,19 @@ class OpenMeteoService:
         ]
     )
 
+    # Variables diarias para las alertas generales del municipio (solo pronóstico, no histórico)
+    ALERTAS_DAILY_VARS = ",".join(
+        [
+            "temperature_2m_max",
+            "apparent_temperature_max",
+            "precipitation_sum",
+            "precipitation_probability_max",
+            "wind_speed_10m_max",
+            "wind_gusts_10m_max",
+            "shortwave_radiation_sum",
+        ]
+    )
+
     AIR_QUALITY_VARS = ",".join(
         [
             "pm10",
@@ -121,6 +134,50 @@ class OpenMeteoService:
                 raise RuntimeError("No se pudo consultar Open-Meteo forecast diario en modo real")
 
         return self._parse_daily(data)
+
+    async def get_pronostico_alertas(
+        self,
+        days: int = 3,
+        lat: Optional[float] = None,
+        lon: Optional[float] = None,
+    ) -> List[Dict]:
+        """
+        Pronóstico diario para las alertas del municipio: calor, sensación térmica, lluvia, viento y sol.
+        Devuelve [] si Open-Meteo no responde: una alerta del clima nunca sale de datos inventados.
+        """
+        params = {
+            "latitude": lat or self.lat,
+            "longitude": lon or self.lon,
+            "daily": self.ALERTAS_DAILY_VARS,
+            "wind_speed_unit": "kmh",
+            "forecast_days": min(max(days, 1), 16),
+            "timezone": "America/Bogota",
+        }
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            try:
+                resp = await client.get(self.forecast_url, params=params)
+                resp.raise_for_status()
+                data = resp.json()
+            except (httpx.HTTPError, ValueError):
+                return []
+
+        daily = data.get("daily", {})
+        dias = []
+        for i, t in enumerate(daily.get("time", [])):
+            ghi_mj = self._safe(daily, "shortwave_radiation_sum", i)
+            dias.append(
+                {
+                    "fecha": t,
+                    "temp_max": self._safe(daily, "temperature_2m_max", i),
+                    "sensacion_max": self._safe(daily, "apparent_temperature_max", i),
+                    "lluvia_mm": self._safe(daily, "precipitation_sum", i),
+                    "prob_lluvia": self._safe(daily, "precipitation_probability_max", i),
+                    "viento_max": self._safe(daily, "wind_speed_10m_max", i),
+                    "rafagas_max": self._safe(daily, "wind_gusts_10m_max", i),
+                    "ghi": round(ghi_mj / 3.6, 2) if ghi_mj is not None else None,
+                }
+            )
+        return dias
 
     async def get_historico(
         self,

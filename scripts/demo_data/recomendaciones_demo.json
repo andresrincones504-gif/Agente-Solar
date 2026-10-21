@@ -1,19 +1,19 @@
 [
   {
-    "id": 1792448523,
+    "id": 1792610373,
     "empresa_id": 1,
-    "texto": "Tu aire acondicionado 12.000 BTU es el 44% de tu consumo (\u2248$4,073,760/mes). Programarlo a 24 \u00b0C, cerrar puertas y ventanas y limpiar el filtro cada mes baja bastante su consumo. Cada grado m\u00e1s fr\u00edo sube el gasto cerca de 7%.",
+    "texto": "Tu aire acondicionado 12.000 BTU (20 unidades) es el 44% de tu consumo (\u2248$4,073,760/mes). Programarlo a 24 \u00b0C, cerrar puertas y ventanas y limpiar el filtro cada mes baja bastante su consumo. Cada grado m\u00e1s fr\u00edo sube el gasto cerca de 7%.",
     "tipo": "ahorro",
     "impacto_estimado_cop": 611064.0,
     "confianza_pct": 80.0,
     "escenario": "demo",
     "origen_dato": "json_demo",
     "confiabilidad_datos": 55.0,
-    "aplicada": true,
-    "created_at": "2026-10-19T22:22:03"
+    "aplicada": false,
+    "created_at": "2026-10-21T19:19:33"
   },
   {
-    "id": 1792448524,
+    "id": 1792610374,
     "empresa_id": 1,
     "texto": "Programa ma\u00f1ana de 10:00 a 15:00 el uso de: secadora de ropa y horno el\u00e9ctrico. Con el sol m\u00e1s fuerte, tus paneles cubren ese consumo en vez de la red.",
     "tipo": "redistribucion",
@@ -22,20 +22,20 @@
     "escenario": "demo",
     "origen_dato": "json_demo",
     "confiabilidad_datos": 55.0,
-    "aplicada": true,
-    "created_at": "2026-10-19T22:22:03"
+    "aplicada": false,
+    "created_at": "2026-10-21T19:19:33"
   },
   {
-    "id": 1792448525,
+    "id": 1792610375,
     "empresa_id": 1,
     "texto": "Evite encender al mismo tiempo los equipos de mayor potencia entre 6 PM y 9 PM, la hora de mayor demanda de la red: as\u00ed no sobrecarga su instalaci\u00f3n.",
     "tipo": "redistribucion",
-    "impacto_estimado_cop": 37081.0,
+    "impacto_estimado_cop": 36907.0,
     "confianza_pct": 80.0,
     "escenario": "demo",
     "origen_dato": "json_demo",
     "confiabilidad_datos": 55.0,
-    "aplicada": true,
-    "created_at": "2026-10-19T22:22:03"
+    "aplicada": false,
+    "created_at": "2026-10-21T19:19:33"
   }
 ]

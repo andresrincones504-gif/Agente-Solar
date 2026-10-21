@@ -153,6 +153,16 @@ else:
                 icon="report", tone="info",
             )
 
+    # Avisos sobre el inventario (antes estaban en Alertas; ahora Alertas es solo del clima del municipio)
+    for aviso in api_get(f"/empresas/{empresa_id}/aparatos/avisos") or []:
+        render_card(
+            aviso["titulo"],
+            body=aviso["mensaje"],
+            action=aviso.get("accion"),
+            icon="chart" if aviso["tipo"] == "consumo_sobre_inventario" else "bolt",
+            tone="warning",
+        )
+
     # -----------------------------------------------------------------------
     # Gráfico: los que más consumen (una serie, barras horizontales ordenadas)
     # -----------------------------------------------------------------------

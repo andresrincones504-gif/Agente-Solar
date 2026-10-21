@@ -1,11 +1,1 @@
-[
-  {
-    "id": 1792377807,
-    "empresa_id": 1,
-    "tipo": "riesgo_apagon",
-    "mensaje": "Alerta clim\u00e1tica de Red (Demo): Pron\u00f3stico de tormenta y vientos de 42 km/h en Fonseca. Se sugiere activar Carga M\u00e1xima Preventiva en tus bater\u00edas.",
-    "severidad": "critica",
-    "leida": false,
-    "created_at": "2026-10-19T02:43:23"
-  }
-]
+[]

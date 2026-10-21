@@ -300,3 +300,49 @@ def texto_inventario_para_prompt(resumen: Dict, maximo: int = 15) -> str:
     if resumen["no_identificado_kwh_mes"]:
         lineas.append(f"- Consumo no identificado (no explicado por los aparatos registrados): ≈{resumen['no_identificado_kwh_mes']:.0f} kWh/mes")
     return "\n".join(lineas)
+
+
+# ---------------------------------------------------------------------------
+# Avisos sobre los aparatos del usuario (se muestran en Mis aparatos, no en Alertas)
+# ---------------------------------------------------------------------------
+UMBRAL_SOBRE_INVENTARIO = 1.3    # factura 30% mayor que lo que suman los aparatos
+UMBRAL_APARATO_DOMINANTE = 40.0  # % del consumo en un solo aparato
+
+
+def avisos_aparatos(resumen: Dict) -> List[Dict]:
+    """Avisos para Mis aparatos: la factura no cuadra con el inventario o un aparato concentra el consumo."""
+    avisos: List[Dict] = []
+    if not resumen.get("tiene_aparatos"):
+        return avisos
+
+    real = resumen.get("real_kwh_mes") or 0.0
+    inventario = resumen.get("inventario_kwh_mes") or 0.0
+    if real > 0 and inventario > 0 and real > inventario * UMBRAL_SOBRE_INVENTARIO:
+        exceso = (real / inventario - 1) * 100
+        avisos.append({
+            "tipo": "consumo_sobre_inventario",
+            "nivel": "amarillo",
+            "titulo": "Tu factura no cuadra con tus aparatos",
+            "mensaje": (
+                f"Tu consumo del último mes ({real:.0f} kWh) es {exceso:.0f}% mayor que lo que suman tus "
+                f"aparatos registrados ({inventario:.0f} kWh). Puede que falte algún aparato en la lista, "
+                "que alguno se use más horas de las indicadas o que tenga una falla (por ejemplo, una nevera "
+                "que no cierra bien)."
+            ),
+            "accion": "Agrega los aparatos que falten o corrige las horas de uso en la tabla.",
+        })
+
+    mayor = resumen["top"][0] if resumen.get("top") else None
+    if mayor and mayor["porcentaje"] >= UMBRAL_APARATO_DOMINANTE and len(resumen["aparatos"]) > 1:
+        consejo = CONSEJOS_POR_TIPO.get(mayor["tipo_aparato"], CONSEJOS_POR_TIPO["otro"])
+        avisos.append({
+            "tipo": "aparato_dominante",
+            "nivel": "amarillo",
+            "titulo": "Un aparato se lleva gran parte de tu consumo",
+            "mensaje": (
+                f"Tu {nombre_aparato(mayor)} es el {mayor['porcentaje']:.0f}% de tu consumo "
+                f"(≈${mayor['costo_mes']:,.0f} al mes). {consejo}"
+            ),
+            "accion": None,
+        })
+    return avisos
