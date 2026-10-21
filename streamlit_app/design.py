@@ -92,6 +92,7 @@ def _fijar_css_en_pagina(css: str) -> None:
     components.html(
         "<script>"
         "const doc = window.parent.document;"
+        "doc.documentElement.lang = 'es';"
         "let tag = doc.getElementById('kai-estilos');"
         "if (!tag) { tag = doc.createElement('style'); tag.id = 'kai-estilos'; doc.head.appendChild(tag); }"
         f"const css = {json.dumps(css)};"
@@ -257,6 +258,7 @@ def inject_css() -> None:
             border: 1px solid rgba(216, 162, 74, 0.16);
         }}
         .ag-hero {{
+            position: relative;
             border-radius: 24px;
             padding: 1.4rem;
             color: white;
@@ -365,55 +367,64 @@ def inject_css() -> None:
             background: rgba(15, 29, 39, 0.98);
         }}
         
-        .ag-hero__expand {{
-    margin-top: 0.9rem;
+/* El texto completo del hero aparece en una ventana flotante al pasar el mouse */
+.ag-hero__panel {{
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 0.8rem 1.2rem 0.8rem;
+    border-radius: 24px;
+    background: rgba(15, 29, 39, 0.97);
+    border: 1px solid var(--border);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    color: var(--text);
+    overflow-y: auto;
+    scrollbar-width: none;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: scale(0.985);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
 }}
-.ag-hero__expand summary {{
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    cursor: pointer;
-    list-style: none;
-    padding: 0.45rem 0.9rem;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.16);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    color: #FFFFFF;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: background 0.2s ease;
-    user-select: none;
+.ag-hero:hover .ag-hero__panel {{
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
 }}
-.ag-hero__expand summary:hover {{
-    background: rgba(255, 255, 255, 0.26);
+.ag-hero--solido .ag-hero__panel {{
+    border-radius: 16px;
 }}
-.ag-hero__expand summary::-webkit-details-marker {{
+/* Sin barra de desplazamiento visible: el texto ocupa justo el recuadro */
+.ag-hero__panel::-webkit-scrollbar {{
     display: none;
 }}
-.ag-hero__expand summary::after {{
-    content: "▾";
-    font-size: 0.75rem;
-    transition: transform 0.2s ease;
+.ag-hero__panel-head {{
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-right: 0;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--text);
 }}
-.ag-hero__expand[open] summary::after {{
-    transform: rotate(180deg);
+.ag-hero__panel-head .ag-icon {{
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    background: rgba(216, 162, 74, 0.14);
+    border: 1px solid rgba(216, 162, 74, 0.4);
 }}
-.ag-hero__expand[open] summary .ag-hero__expand-label::before {{
-    content: "Ver menos";
-}}
-.ag-hero__expand:not([open]) summary .ag-hero__expand-label::before {{
-    content: "Ver más";
-}}
-.ag-hero__expand-content {{
-    margin-top: 0.8rem;
-    padding: 0.85rem 1rem;
-    border-radius: 14px;
-    background: rgba(0, 0, 0, 0.18);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    font-size: 0.95rem;
-    line-height: 1.55;
-    color: #FFFFFF;
-    opacity: 0.96;
+.ag-hero__panel-body {{
+    font-size: 0.93rem;
+    line-height: 1.5;
+    text-align: justify;
+    text-justify: inter-word;
+    color: #D5E1E7;
 }}
 
 /* ---------- Menú lateral (prototipo Ka'i) ---------- */
@@ -554,6 +565,8 @@ def inject_css() -> None:
     font-weight: 700;
     color: var(--text);
     flex-shrink: 0;
+    overflow: hidden;
+    white-space: nowrap;
 }}
 .ag-user-card__text {{
     min-width: 0;
@@ -589,7 +602,7 @@ def inject_css() -> None:
 /* ---------- Mi día (prototipo) ---------- */
 .ag-hero--solido {{
     border-radius: 16px;
-    padding: 1.5rem 1.6rem;
+    padding: 2.1rem 1.6rem 2.2rem;
     box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
 }}
 .ag-hero--solido .ag-hero__eyebrow .ag-icon {{
@@ -604,9 +617,6 @@ def inject_css() -> None:
 .ag-hero--solido .ag-hero__subtitle {{
     font-size: 0.98rem;
     max-width: 860px;
-}}
-.ag-hero--solido .ag-hero__expand summary {{
-    border-radius: 10px;
 }}
 .ag-icon--round {{
     width: 2rem;
@@ -669,6 +679,319 @@ def inject_css() -> None:
 [data-testid="column"]:has(.ag-tile) > [data-testid="stVerticalBlockBorderWrapper"] > div,
 [data-testid="column"]:has(.ag-tile) > [data-testid="stVerticalBlockBorderWrapper"] > div > [data-testid="stVerticalBlock"] {{
     height: 100%;
+}}
+
+/* ---------- Tablas de solo lectura (Mis aparatos) ---------- */
+.ag-tabla-titulo {{
+    margin: 0.4rem 0 0.55rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+}}
+.ag-tabla-wrap {{
+    margin-bottom: 1.4rem;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(16, 31, 41, 0.7), rgba(12, 24, 33, 0.7));
+    overflow-x: auto;
+}}
+.ag-tabla {{
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    font-size: 0.93rem;
+    color: var(--text);
+}}
+.ag-tabla--tipos {{
+    min-width: 420px;
+}}
+.ag-tabla th {{
+    padding: 0.9rem 1.1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--muted);
+    white-space: nowrap;
+}}
+.ag-tabla td {{
+    padding: 0.8rem 1.1rem;
+    border-bottom: 1px solid rgba(33, 58, 73, 0.55);
+    vertical-align: middle;
+}}
+.ag-tabla tbody tr:last-child td {{
+    border-bottom: none;
+}}
+.ag-tabla tbody tr:hover td {{
+    background: rgba(234, 242, 246, 0.03);
+}}
+.ag-tabla__nombre {{
+    min-width: 13rem;
+    font-weight: 500;
+}}
+.ag-tabla .ag-tabla__centro {{
+    text-align: center;
+}}
+.ag-tabla .ag-tabla__derecha {{
+    text-align: right;
+}}
+.ag-tabla__num {{
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    white-space: nowrap;
+}}
+.ag-tabla__cantidad {{
+    display: inline-block;
+    min-width: 2.6rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 8px;
+    background: rgba(234, 242, 246, 0.06);
+    font-variant-numeric: tabular-nums;
+}}
+.ag-tabla__pct {{
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-width: 9rem;
+}}
+.ag-tabla__barra {{
+    flex: 1;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(234, 242, 246, 0.08);
+    overflow: hidden;
+}}
+.ag-tabla__barra > span {{
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--brand);
+}}
+.ag-tabla__pct .ag-tabla__num {{
+    min-width: 3.4rem;
+    text-align: right;
+    font-weight: 600;
+    font-size: 0.86rem;
+}}
+.ag-pill {{
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+}}
+.ag-pill--tipico {{
+    background: rgba(47, 163, 138, 0.12);
+    border-color: rgba(47, 163, 138, 0.38);
+    color: #5CC9AE;
+}}
+.ag-pill--tuyo {{
+    background: rgba(216, 162, 74, 0.12);
+    border-color: rgba(216, 162, 74, 0.38);
+    color: #E3B866;
+}}
+.ag-pill--factura {{
+    background: rgba(76, 152, 211, 0.12);
+    border-color: rgba(76, 152, 211, 0.38);
+    color: #7DB6E3;
+}}
+.ag-tabla__pie {{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding: 0.9rem 1.1rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.9rem;
+    color: var(--muted);
+}}
+.ag-tabla__resumen {{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.4rem;
+}}
+.ag-tabla__resumen b {{
+    color: var(--text);
+}}
+.ag-tabla__total {{
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}}
+.ag-tabla__total-valor {{
+    padding: 0.45rem 0.85rem;
+    border-radius: 10px;
+    border: 1px solid rgba(57, 185, 130, 0.45);
+    background: rgba(57, 185, 130, 0.10);
+    color: var(--success);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 700;
+    white-space: nowrap;
+}}
+
+/* ---------- Tabla para editar aparatos (tonos cálidos de la marca: dorado y azul) ---------- */
+.ag-pill--info {{
+    background: rgba(76, 152, 211, 0.12);
+    border-color: rgba(76, 152, 211, 0.38);
+    color: #7DB6E3;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-edit-pie) {{
+    padding: 0 !important;
+    border: 1px solid rgba(216, 162, 74, 0.28) !important;
+    border-radius: 14px !important;
+    background: linear-gradient(180deg, rgba(19, 38, 50, 0.75), rgba(15, 29, 39, 0.9));
+    overflow: hidden;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-edit-pie) > div > [data-testid="stVerticalBlock"] {{
+    gap: 0;
+}}
+[data-testid="stHorizontalBlock"]:has(.ag-edit-th) {{
+    padding: 0.75rem 1rem;
+    background: rgba(48, 38, 26, 0.9);
+    border-bottom: 1px solid rgba(216, 162, 74, 0.3);
+}}
+[data-testid="stHorizontalBlock"]:has(.ag-edit-td) {{
+    padding: 0.45rem 1rem;
+    border-bottom: 1px solid rgba(216, 162, 74, 0.12);
+    transition: background 0.15s ease;
+}}
+[data-testid="stHorizontalBlock"]:has(.ag-edit-td):hover {{
+    background: rgba(216, 162, 74, 0.05);
+}}
+.ag-edit-th {{
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+}}
+.ag-edit-td {{
+    font-size: 0.93rem;
+    color: var(--text);
+}}
+.ag-edit-td--nombre {{
+    font-weight: 500;
+}}
+.ag-edit-td--centro {{
+    text-align: center;
+}}
+.ag-edit-td--derecha {{
+    text-align: right;
+}}
+.ag-edit-num {{
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    white-space: nowrap;
+}}
+.ag-edit-num small {{
+    font-family: inherit;
+    font-weight: 400;
+    color: var(--muted);
+}}
+.ag-edit-chip {{
+    display: inline-block;
+    min-width: 2.4rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid rgba(216, 162, 74, 0.35);
+    background: rgba(216, 162, 74, 0.12);
+    color: #E3B866;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}}
+/* Botones de editar (azul) y eliminar (rojo suave) */
+[data-testid="stHorizontalBlock"]:has(.ag-edit-td) .stButton {{
+    display: flex;
+    justify-content: center;
+}}
+[data-testid="stHorizontalBlock"]:has(.ag-edit-td) .stButton button {{
+    width: 2.4rem;
+    min-height: 2.2rem;
+    height: 2.2rem;
+    padding: 0;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid rgba(76, 152, 211, 0.4);
+    color: #7DB6E3;
+}}
+[data-testid="stHorizontalBlock"]:has(.ag-edit-td) .stButton button:hover {{
+    background: rgba(76, 152, 211, 0.15);
+    border-color: #4C98D3;
+    color: #A9CFEE;
+}}
+[data-testid="stHorizontalBlock"]:has(.ag-edit-td) [data-testid="stHorizontalBlock"] > [data-testid="column"]:last-child .stButton button {{
+    border-color: rgba(212, 106, 96, 0.45);
+    color: var(--danger);
+}}
+[data-testid="stHorizontalBlock"]:has(.ag-edit-td) [data-testid="stHorizontalBlock"] > [data-testid="column"]:last-child .stButton button:hover {{
+    background: rgba(212, 106, 96, 0.15);
+    border-color: var(--danger);
+    color: #EE958C;
+}}
+.ag-edit-pie {{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    padding: 0.9rem 1.1rem;
+    background: rgba(48, 38, 26, 0.45);
+    font-size: 0.9rem;
+    color: var(--muted);
+}}
+.ag-edit-pie__resumen {{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.4rem;
+}}
+.ag-edit-pie__resumen b {{
+    color: var(--text);
+}}
+.ag-edit-pie__total {{
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}}
+.ag-edit-pie__valor {{
+    padding: 0.45rem 0.85rem;
+    border-radius: 10px;
+    border: 1px solid rgba(216, 162, 74, 0.5);
+    background: rgba(216, 162, 74, 0.12);
+    color: #E3B866;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-weight: 700;
+    white-space: nowrap;
+}}
+/* Ventanas de editar y eliminar */
+.ag-dialogo-nota {{
+    margin: 0.3rem 0 0.6rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 10px;
+    border: 1px solid rgba(216, 162, 74, 0.3);
+    background: rgba(216, 162, 74, 0.08);
+    color: var(--text);
+}}
+.ag-dialogo-borrar {{
+    font-size: 1rem;
+    line-height: 1.5;
+}}
+div[role="dialog"]:has(.ag-dialogo-borrar) .stButton button[kind="primary"] {{
+    background: var(--danger);
+    border-color: var(--danger);
+}}
+div[role="dialog"]:has(.ag-dialogo-borrar) .stButton button[kind="primary"]:hover {{
+    background: #B9554C;
+    border-color: #B9554C;
 }}
 
 /* ---------- Cambio de pantalla suave ---------- */
@@ -778,6 +1101,7 @@ def render_hero(
     tone: str = "brand",
     expandable_text: str | None = None,
     variant: str = "degradado",
+    expandable_title: str = "Resumen completo",
 ) -> None:
     """Render the main page hero, con desglose opcional integrado.
 
@@ -791,10 +1115,13 @@ def render_hero(
     expand_html = ""
     if expandable_text:
         expand_html = f"""
-            <details class="ag-hero__expand">
-                <summary><span class="ag-hero__expand-label"></span></summary>
-                <div class="ag-hero__expand-content">{escape(expandable_text)}</div>
-            </details>
+            <div class="ag-hero__panel" role="tooltip" aria-label="{escape(expandable_title)}">
+                <div class="ag-hero__panel-head">
+                    <span class="ag-icon">{icon_svg(icon, 16, PALETTE["accent"])}</span>
+                    <span>{escape(expandable_title)}</span>
+                </div>
+                <div class="ag-hero__panel-body">{escape(expandable_text)}</div>
+            </div>
         """
 
     render_html_block(
@@ -822,10 +1149,15 @@ def render_card(
     badge: str | None = None,
     action: str | None = None,
     tooltip: str | None = None,
+    badge_tinted: bool = False,
 ) -> None:
-    """Render a dashboard-style summary card."""
+    """Render a dashboard-style summary card.
+
+    badge_tinted=True pinta la etiqueta con el color del tono de la tarjeta.
+    """
     color = TONE_MAP.get(tone, TONE_MAP["brand"])[0]
-    badge_html = f'<span class="ag-card__badge">{escape(badge)}</span>' if badge else ""
+    badge_style = f' style="background: {color}1F; border-color: {color}59; color: {color};"' if badge_tinted else ""
+    badge_html = f'<span class="ag-card__badge"{badge_style}>{escape(badge)}</span>' if badge else ""
     value_html = f'<div class="ag-card__value" style="color: {color};">{escape(value)}</div>' if value else ""
     
     tooltip_attr = f' data-tooltip="{escape(tooltip)}"' if tooltip else ""
@@ -872,3 +1204,41 @@ def render_tile(title: str, body: str = "", *, icon: str = "chart", tone: str = 
         </div>
         """
     )
+
+
+# Colores del logo de Ka'i (un poco más vivos que los de la interfaz)
+LOGO_DORADO = "#F9B11A"
+LOGO_VERDE = "#17A398"
+
+_LOGO_ANILLO = (
+    "M56 24H64V32H72V40H80V48H88V56H96V64H88V72H80V80H72V88H64V96H56V88H48V80H40V72H32V64H24V56H32V48H40V40H48V32H56Z "
+    "M56 32H64V40H72V48H80V56H88V64H80V72H72V80H64V88H56V80H48V72H40V64H32V56H40V48H48V40H56Z"
+)
+_LOGO_NUCLEO = "M56 40H64V48H72V56H80V64H72V72H64V80H56V72H48V64H40V56H48V48H56Z"
+_LOGO_RAYOS = ((56, 8), (56, 104), (8, 56), (104, 56), (24, 24), (88, 24), (24, 88), (88, 88))
+
+
+def logo_kai_html(icon_px: int = 118) -> str:
+    """Logo de Ka'i: sol tejido (cuadros, estilo wayuu) + palabra Ka'i con el apóstrofo dorado."""
+    rayos = "".join(f'<rect x="{x}" y="{y}" width="8" height="8"/>' for x, y in _LOGO_RAYOS)
+    # El dibujo va de 8 a 112: se recorta el borde vacío para que el logo quede centrado de verdad
+    lado = round(icon_px * 104 / 120)
+    svg = (
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 8 104 104" width="{lado}" height="{lado}">'
+        f'<path fill="{LOGO_VERDE}" fill-rule="evenodd" d="{_LOGO_ANILLO}"/>'
+        f'<path fill="{LOGO_DORADO}" d="{_LOGO_NUCLEO}"/>'
+        f'<rect x="56" y="56" width="8" height="8" fill="{PALETTE["bg"]}"/>'
+        f'<g fill="{LOGO_DORADO}">{rayos}</g>'
+        "</svg>"
+    )
+    # Como imagen (igual que icon_svg): st.html no deja pasar <svg> en línea
+    icono = (
+        f'<img src="data:image/svg+xml;utf8,{quote(svg)}" width="{lado}" height="{lado}" alt="Sol de Ka’i" />'
+    )
+    tam_letra = round(icon_px * 0.72)
+    palabra = (
+        f'<span class="notranslate" translate="no" style="font-family: \'Outfit\', \'Century Gothic\', \'Segoe UI\', sans-serif; '
+        f'font-weight: 700; font-size: {tam_letra}px; line-height: 1; letter-spacing: -0.02em; color: #FFFFFF;">'
+        f'Ka<span style="color: {LOGO_DORADO};">’</span>i</span>'
+    )
+    return icono + palabra

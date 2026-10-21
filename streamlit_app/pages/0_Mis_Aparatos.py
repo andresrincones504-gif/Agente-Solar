@@ -3,7 +3,6 @@
 import os
 import sys
 
-import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
@@ -17,8 +16,10 @@ from api_client import (
     get_current_user,
     is_authenticated,
 )
-from design import PALETTE, render_card, render_hero, render_section_header
-from inventario import calcular_cambios, coincide
+from html import escape
+
+from design import PALETTE, render_card, render_hero, render_html_block, render_section_header
+from inventario import coincide, payload_edicion
 from ui import render_user_sidebar
 
 st.set_page_config(page_title="Mis aparatos", layout="wide", initial_sidebar_state="expanded")
@@ -56,6 +57,163 @@ def _recargar(mensaje: str) -> None:
 
 def _cop(valor: float) -> str:
     return f"${valor:,.0f}"
+
+
+# Etiqueta y estilo de la columna "Dato" (de dónde sale el consumo de cada aparato)
+ORIGEN_DATO = {
+    "catalogo": ("Típico", "ag-pill--tipico"),
+    "usuario": ("Tuyo", "ag-pill--tuyo"),
+    "factura": ("Factura", "ag-pill--factura"),
+}
+
+
+def _barra_pct(pct: float) -> str:
+    """Porcentaje con una barrita proporcional."""
+    pct = max(0.0, min(100.0, float(pct or 0)))
+    return (
+        '<div class="ag-tabla__pct">'
+        f'<span class="ag-tabla__barra"><span style="width: {pct:.1f}%;"></span></span>'
+        f'<span class="ag-tabla__num">{pct:.1f}%</span>'
+        "</div>"
+    )
+
+
+def _tabla_aparatos_html(filas: list, stats: dict) -> str:
+    """Tabla de solo lectura por aparato, con resumen al pie."""
+    cuerpo = []
+    for f in filas:
+        etiqueta, clase = ORIGEN_DATO.get(f["origen_dato"], (str(f["origen_dato"]).title(), "ag-pill--tipico"))
+        cuerpo.append(
+            "<tr>"
+            f'<td class="ag-tabla__nombre">{escape(f["nombre"])}</td>'
+            f'<td class="ag-tabla__centro"><span class="ag-tabla__cantidad">{int(f["cantidad"] or 0)}</span></td>'
+            f'<td class="ag-tabla__derecha ag-tabla__num">{f["consumo_kwh_mes"]:,.1f}</td>'
+            f'<td class="ag-tabla__derecha ag-tabla__num">{_cop(f["costo_cop_mes"])}</td>'
+            f"<td>{_barra_pct(f.get('porcentaje'))}</td>"
+            f'<td class="ag-tabla__centro"><span class="ag-pill {clase}">{etiqueta}</span></td>'
+            "</tr>"
+        )
+    reales = [f for f in filas if f["aparato_id"] is not None]
+    unidades = sum(int(f["cantidad"] or 0) for f in reales)
+    return f"""
+    <div class="ag-tabla-titulo">Por aparato</div>
+    <div class="ag-tabla-wrap">
+        <table class="ag-tabla">
+            <thead><tr>
+                <th>Aparato</th>
+                <th class="ag-tabla__centro">Cantidad</th>
+                <th class="ag-tabla__derecha">kWh / mes</th>
+                <th class="ag-tabla__derecha">Costo / mes</th>
+                <th>% del total</th>
+                <th class="ag-tabla__centro">Dato</th>
+            </tr></thead>
+            <tbody>{"".join(cuerpo)}</tbody>
+        </table>
+        <div class="ag-tabla__pie">
+            <div class="ag-tabla__resumen">
+                <span>Aparatos listados: <b>{len(reales)} tipos</b></span>
+                <span>Unidades totales: <b>{unidades} aparatos</b></span>
+                <span>Costo estimado: <b>{_cop(stats["costo_total_cop_mes"])} /mes</b></span>
+            </div>
+            <div class="ag-tabla__total">
+                <span>Consumo total estimado:</span>
+                <span class="ag-tabla__total-valor">{stats["consumo_total_kwh_mes"]:,.1f} kWh/mes</span>
+            </div>
+        </div>
+    </div>
+    """
+
+
+def _tabla_tipos_html(por_tipo: list) -> str:
+    """Tabla de solo lectura por tipo de aparato."""
+    cuerpo = "".join(
+        "<tr>"
+        f'<td class="ag-tabla__nombre">{escape(TIPOS_APARATO.get(t["tipo_aparato"], t["tipo_aparato"]))}</td>'
+        f'<td class="ag-tabla__derecha ag-tabla__num">{t["consumo_kwh_mes"]:,.1f}</td>'
+        f"<td>{_barra_pct(t.get('porcentaje'))}</td>"
+        "</tr>"
+        for t in por_tipo
+    )
+    return f"""
+    <div class="ag-tabla-titulo">Por tipo de aparato</div>
+    <div class="ag-tabla-wrap">
+        <table class="ag-tabla ag-tabla--tipos">
+            <thead><tr>
+                <th>Tipo</th>
+                <th class="ag-tabla__derecha">kWh / mes</th>
+                <th>% del total</th>
+            </tr></thead>
+            <tbody>{cuerpo}</tbody>
+        </table>
+    </div>
+    """
+
+
+# ---------------------------------------------------------------------------
+# Tabla para editar: columnas y ventanas de editar / eliminar
+# ---------------------------------------------------------------------------
+COLUMNAS_EDICION = [3.2, 1.1, 1.3, 1.1, 1.1, 1.3, 1.3]
+ENCABEZADOS_EDICION = ("Aparato", "Cantidad", "Potencia", "Horas al día", "Dato", "kWh / mes", "Acciones")
+CLASES_EDICION = ("", "ag-edit-td--centro", "ag-edit-td--derecha", "ag-edit-td--centro", "ag-edit-td--centro", "ag-edit-td--derecha", "ag-edit-td--centro")
+
+
+@st.dialog("Editar aparato")
+def _dialogo_editar(a: dict, empresa_id: int) -> None:
+    st.markdown(f"**{a['nombre']}**")
+    st.caption("Cambia los valores y guarda. El consumo se calcula con potencia × horas de uso × cantidad.")
+    cantidad = st.number_input("Cantidad", min_value=1, max_value=500, step=1, value=int(a["cantidad"]), key=f"dlg_cant_{a['id']}")
+    # Solo los aparatos del catálogo con valores propios pueden volver al valor típico
+    puede_volver = a.get("catalogo_id") is not None and (a.get("potencia_w") is not None or a.get("horas_uso_dia") is not None)
+    usar_tipico = puede_volver and st.checkbox(
+        "Volver a los valores típicos del catálogo", key=f"dlg_tipico_{a['id']}",
+        help="Quita la potencia y las horas que indicaste y usa las de referencia.",
+    )
+    c1, c2 = st.columns(2)
+    potencia = c1.number_input(
+        "Potencia (W)", min_value=1.0, max_value=200000.0, step=10.0,
+        value=float(a["potencia_efectiva_w"]), key=f"dlg_pot_{a['id']}",
+        help="Está en la etiqueta del aparato.", disabled=usar_tipico,
+    )
+    horas = c2.number_input(
+        "Horas al día", min_value=0.0, max_value=24.0, step=0.5,
+        value=float(a["horas_efectivas_dia"]), key=f"dlg_horas_{a['id']}",
+        help="Horas que lo usas en un día normal.", disabled=usar_tipico,
+    )
+    if usar_tipico:
+        potencia = horas = None
+        nota = "Se usarán la potencia y las horas típicas del catálogo."
+    else:
+        nota = f"Consumo estimado con estos valores: <b>{_kwh_mes(potencia, horas, cantidad):,.1f} kWh/mes</b>"
+    st.markdown(f"<div class='ag-dialogo-nota'>{nota}</div>", unsafe_allow_html=True)
+    g1, g2 = st.columns(2)
+    if g1.button("Cancelar", use_container_width=True, key=f"dlg_cancelar_{a['id']}"):
+        st.rerun()
+    if g2.button("Guardar", type="primary", use_container_width=True, key=f"dlg_guardar_{a['id']}"):
+        payload = payload_edicion(a, cantidad, potencia, horas)
+        if not payload:
+            st.info("No cambiaste ningún valor.")
+        elif api_patch_detallado(f"/empresas/{empresa_id}/aparatos/{a['id']}", json=payload) is not None:
+            _recargar(f"Listo: {a['nombre']} quedó actualizado.")
+
+
+@st.dialog("Eliminar aparato")
+def _dialogo_eliminar(a: dict, empresa_id: int) -> None:
+    unidades = f" ({a['cantidad']} unidades)" if int(a["cantidad"]) > 1 else ""
+    st.markdown(
+        f"<div class='ag-dialogo-borrar'>¿Seguro que quieres eliminar <b>{escape(a['nombre'])}</b>{unidades} de tu lista?</div>",
+        unsafe_allow_html=True,
+    )
+    st.caption("Dejará de contar en tu consumo estimado. Si te equivocas, puedes volver a agregarlo más abajo.")
+    c1, c2 = st.columns(2)
+    if c1.button("Cancelar", use_container_width=True, key=f"dlg_no_borrar_{a['id']}"):
+        st.rerun()
+    if c2.button("Sí, eliminar", type="primary", use_container_width=True, key=f"dlg_si_borrar_{a['id']}"):
+        if api_delete(f"/empresas/{empresa_id}/aparatos/{a['id']}"):
+            _recargar(f"Listo: eliminamos {a['nombre']} de tu lista.")
+
+
+def _kwh_mes(potencia_w: float, horas: float, cantidad: int) -> float:
+    return (potencia_w or 0) * (horas or 0) * (cantidad or 1) * 30 / 1000
 
 
 # ---------------------------------------------------------------------------
@@ -215,28 +373,8 @@ else:
         )
 
     with st.expander("Ver la tabla por aparato y por tipo"):
-        tabla = pd.DataFrame(
-            {
-                "Aparato": [f["nombre"] for f in filas],
-                "Cantidad": [f["cantidad"] for f in filas],
-                "kWh/mes": [round(f["consumo_kwh_mes"], 1) for f in filas],
-                "Costo/mes (COP)": [f["costo_cop_mes"] for f in filas],
-                "% del total": [f["porcentaje"] for f in filas],
-                "Dato": [{"usuario": "Tuyo", "catalogo": "Típico", "factura": "Factura"}.get(f["origen_dato"], f["origen_dato"]) for f in filas],
-            }
-        )
-        st.dataframe(
-            tabla, hide_index=True, use_container_width=True,
-            column_config={"Costo/mes (COP)": st.column_config.NumberColumn(format="$%d")},
-        )
-        por_tipo = pd.DataFrame(
-            {
-                "Tipo": [TIPOS_APARATO.get(t["tipo_aparato"], t["tipo_aparato"]) for t in stats["por_tipo"]],
-                "kWh/mes": [round(t["consumo_kwh_mes"], 1) for t in stats["por_tipo"]],
-                "% del total": [t["porcentaje"] for t in stats["por_tipo"]],
-            }
-        )
-        st.dataframe(por_tipo, hide_index=True, use_container_width=True)
+        render_html_block(_tabla_aparatos_html(filas, stats))
+        render_html_block(_tabla_tipos_html(stats["por_tipo"]))
 
 # ---------------------------------------------------------------------------
 # Editar inventario
@@ -245,57 +383,52 @@ if aparatos:
     render_section_header(
         "Editar mis aparatos",
         "settings",
-        "Cambia cantidades, potencia u horas de uso, o marca los que quieres eliminar. Si borras la potencia o las horas, vuelve el valor típico.",
+        "Usa el lápiz para cambiar cantidad, potencia u horas de uso, o la caneca para quitar un aparato de tu lista.",
     )
-    original = pd.DataFrame(
-        {
-            "id": [a["id"] for a in aparatos],
-            "Aparato": [a["nombre"] for a in aparatos],
-            "Cantidad": [a["cantidad"] for a in aparatos],
-            "Potencia (W)": pd.Series([a["potencia_efectiva_w"] for a in aparatos], dtype="float64"),
-            "Horas al día": pd.Series([a["horas_efectivas_dia"] for a in aparatos], dtype="float64"),
-            "Dato": ["Tuyo" if a["origen_dato"] == "usuario" else "Típico" for a in aparatos],
-            "kWh/mes": [round(a["consumo_kwh_mes"], 1) for a in aparatos],
-            "Eliminar": [False for _ in aparatos],
-        }
-    )
-    editado = st.data_editor(
-        original,
-        key=f"editor_aparatos_{empresa_id}_{ss['aparatos_version']}",
-        hide_index=True,
-        use_container_width=True,
-        num_rows="fixed",
-        disabled=["Aparato", "Dato", "kWh/mes"],
-        column_config={
-            "id": None,
-            "Cantidad": st.column_config.NumberColumn(min_value=1, max_value=500, step=1, required=True),
-            "Potencia (W)": st.column_config.NumberColumn(min_value=1, max_value=200000, step=1, format="%.0f", help="Está en la etiqueta del aparato. Borra el valor para volver al típico."),
-            "Horas al día": st.column_config.NumberColumn(min_value=0, max_value=24, step=0.5, format="%g", help="Horas que lo usas en un día normal. Borra el valor para volver al típico."),
-            "Dato": st.column_config.TextColumn(help="Típico: valor de referencia del catálogo. Tuyo: lo indicaste tú."),
-            "kWh/mes": st.column_config.NumberColumn(format="%.1f", help="Estimación con los valores actuales (antes de ajustar a la factura)."),
-            "Eliminar": st.column_config.CheckboxColumn(help="Marca y guarda para quitarlo de tu lista."),
-        },
-    )
-
-    cambios, borrar = calcular_cambios(original, editado, aparatos)
-
-    if cambios or borrar:
-        partes = []
-        if cambios:
-            partes.append(f"{len(cambios)} con cambios")
-        if borrar:
-            partes.append(f"{len(borrar)} para eliminar: " + ", ".join(n for _, n in borrar))
-        st.caption("Pendiente de guardar: " + "; ".join(partes) + ".")
-    if st.button("Guardar cambios", type="primary", disabled=not (cambios or borrar), key="guardar_aparatos"):
-        ok_cambios = sum(1 for aid, _, p in cambios if api_patch_detallado(f"/empresas/{empresa_id}/aparatos/{aid}", json=p) is not None)
-        ok_borrar = sum(1 for aid, _ in borrar if api_delete(f"/empresas/{empresa_id}/aparatos/{aid}"))
-        if ok_cambios == len(cambios) and ok_borrar == len(borrar):
-            mensaje = []
-            if ok_cambios:
-                mensaje.append(f"{ok_cambios} aparato(s) actualizados")
-            if ok_borrar:
-                mensaje.append(f"{ok_borrar} eliminado(s)")
-            _recargar("Listo: " + " y ".join(mensaje) + ".")
+    with st.container(border=True):
+        # Encabezado de la tabla (el marcador le da el estilo a todo el recuadro)
+        cab = st.columns(COLUMNAS_EDICION, vertical_alignment="center")
+        for col, titulo, clase in zip(cab, ENCABEZADOS_EDICION, CLASES_EDICION):
+            with col:
+                render_html_block(f'<div class="ag-edit-th {clase}">{titulo}</div>')
+        for a in aparatos:
+            fila = st.columns(COLUMNAS_EDICION, vertical_alignment="center")
+            propio = a["origen_dato"] == "usuario"
+            celdas = (
+                f'<div class="ag-edit-td ag-edit-td--nombre">{escape(a["nombre"])}</div>',
+                f'<div class="ag-edit-td ag-edit-td--centro"><span class="ag-edit-chip">{a["cantidad"]}</span></div>',
+                f'<div class="ag-edit-td ag-edit-td--derecha ag-edit-num">{a["potencia_efectiva_w"]:,.0f} <small>W</small></div>',
+                f'<div class="ag-edit-td ag-edit-td--centro ag-edit-num">{a["horas_efectivas_dia"]:g} <small>h</small></div>',
+                '<div class="ag-edit-td ag-edit-td--centro">'
+                + ('<span class="ag-pill ag-pill--tuyo">Tuyo</span>' if propio else '<span class="ag-pill ag-pill--info">Típico</span>')
+                + "</div>",
+                f'<div class="ag-edit-td ag-edit-td--derecha ag-edit-num">{a["consumo_kwh_mes"]:,.1f}</div>',
+            )
+            for col, celda in zip(fila[:-1], celdas):
+                with col:
+                    render_html_block(celda)
+            with fila[-1]:
+                b_editar, b_borrar = st.columns(2, gap="small")
+                if b_editar.button(":material/edit:", key=f"editar_aparato_{a['id']}", help=f"Editar {a['nombre']}"):
+                    _dialogo_editar(a, empresa_id)
+                if b_borrar.button(":material/delete:", key=f"borrar_aparato_{a['id']}", help=f"Eliminar {a['nombre']}"):
+                    _dialogo_eliminar(a, empresa_id)
+        unidades = sum(int(a["cantidad"]) for a in aparatos)
+        total_kwh = sum(float(a["consumo_kwh_mes"]) for a in aparatos)
+        render_html_block(
+            f"""
+            <div class="ag-edit-pie">
+                <div class="ag-edit-pie__resumen">
+                    <span>Aparatos listados: <b>{len(aparatos)} tipos</b></span>
+                    <span>Unidades totales: <b>{unidades} aparatos</b></span>
+                </div>
+                <div class="ag-edit-pie__total">
+                    <span>Consumo estimado:</span>
+                    <span class="ag-edit-pie__valor">{total_kwh:,.1f} kWh/mes</span>
+                </div>
+            </div>
+            """
+        )
 
 # ---------------------------------------------------------------------------
 # Agregar aparatos

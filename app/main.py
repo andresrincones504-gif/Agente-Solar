@@ -1,5 +1,5 @@
 """
-Agente Solar Inteligente — API FastAPI
+Ka’i — API FastAPI
 Dashboard Solar con IA para Ahorro Energético en La Guajira (ubicación configurable con LOCATION_*).
 """
 from contextlib import asynccontextmanager
@@ -61,7 +61,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Agente Solar Inteligente API",
+    title="Ka’i API",
     description=(
         f"API REST para el Dashboard Solar con IA para Ahorro Energético en {settings.LOCATION_NAME}. "
         "Diseñada para ser consumida desde el frontend Streamlit y aplicaciones móviles."
@@ -103,7 +103,7 @@ app.include_router(aparatos.router, prefix=API_PREFIX)
 @app.get("/", tags=["Root"])
 def root():
     return {
-        "app": "Agente Solar Inteligente API",
+        "app": "Ka’i API",
         "version": "1.1.0",
         "ubicacion": f"{settings.LOCATION_NAME}, Colombia",
         "docs": "/docs",

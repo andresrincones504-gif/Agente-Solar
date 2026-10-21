@@ -79,6 +79,7 @@ render_hero(
     tone=score_tone,
     expandable_text=resumen_text if es_largo else None,
     variant="solido",
+    expandable_title="Resumen completo de tu día",
 )
 
 consejo = data.get("consejo_aparatos")

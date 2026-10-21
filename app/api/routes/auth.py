@@ -35,22 +35,21 @@ def register(
     current_user: Optional[User] = Depends(get_optional_user),
 ):
     """
-    Registrar nuevo usuario.
+    Registrar nuevo usuario. Solo un administrador autenticado puede hacerlo.
 
-    Registro público: crea un usuario con rol empresa y su hogar o empresa, con el tipo
-    de entidad y los aparatos elegidos. Solo un administrador autenticado puede crear
-    usuarios admin o analista, o asociar el usuario a una empresa ya existente.
+    Crea el usuario (empresa, analista o admin). Si no se indica una empresa existente,
+    crea también su hogar o empresa, con el tipo de entidad y los aparatos elegidos.
     """
-    es_admin = current_user is not None and current_user.role == UserRole.ADMIN
-    if user_data.role != UserRole.EMPRESA and not es_admin:
+    if current_user is None:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Solo un administrador puede crear usuarios con rol admin o analista",
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Inicia sesión como administrador para registrar usuarios",
+            headers={"WWW-Authenticate": "Bearer"},
         )
-    if user_data.empresa_id and not es_admin:
+    if current_user.role != UserRole.ADMIN:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail="Solo un administrador puede asociar un usuario a una empresa existente",
+            detail="Solo un administrador puede registrar usuarios",
         )
 
     existing = db.query(User).filter(User.email == user_data.email).first()

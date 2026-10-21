@@ -1,5 +1,5 @@
 """
-Registro en tres pasos:
+Registro de usuarios nuevos (solo administrador, desde Administración), en tres pasos:
 1. Cuenta y tipo de entidad (hogar, negocio, empresa, institución, finca, comunidad).
 2. Aparatos de esa categoría, con buscador por palabras y selección múltiple.
 3. Cantidad, potencia (W) y horas de uso opcionales por aparato, y creación de la cuenta.
@@ -13,7 +13,7 @@ from itertools import groupby
 
 import streamlit as st
 
-from api_client import get_catalogo_aparatos, login, register
+from api_client import get_catalogo_aparatos, register
 from design import render_section_header
 from inventario import coincide
 
@@ -50,7 +50,7 @@ TIPOS_APARATO = {
     "oficina": "Oficina y tecnología",
     "bombas_motores": "Bombas, motores y herramientas",
 }
-PASOS = {1: "Tu cuenta", 2: "Tus aparatos", 3: "Cantidades y consumo"}
+PASOS = {1: "Cuenta", 2: "Aparatos", 3: "Cantidades y consumo"}
 
 
 # ---------------------------------------------------------------------------
@@ -105,7 +105,7 @@ def _paso_1(ss) -> None:
         label_visibility="collapsed",
     )
 
-    render_section_header("Tus datos", "person")
+    render_section_header("Datos de la cuenta", "person", "Con este correo y contraseña la persona iniciará sesión.")
     c1, c2 = st.columns(2)
     nombre = c1.text_input("Nombre completo", value=datos.get("full_name", ""), placeholder="Juan Pérez", key="reg_full_name")
     email = c2.text_input("Correo electrónico", value=datos.get("email", ""), placeholder="juan.perez@correo.com", key="reg_email")
@@ -259,7 +259,7 @@ def _paso_3(ss) -> None:
 
     total_kwh = 0.0
     if not seleccion and not ss["reg_propios"]:
-        st.info("No elegiste aparatos. Puedes crear tu cuenta así y agregarlos después en Mis aparatos.")
+        st.info("No elegiste aparatos. Puedes crear la cuenta así y agregarlos después en Mis aparatos.")
 
     for clave, item in seleccion.items():
         a = catalogo[clave]
@@ -291,7 +291,7 @@ def _paso_3(ss) -> None:
 
     b1, b2 = st.columns(2)
     b1.button("← Atrás", use_container_width=True, on_click=_ir_a, args=(2,), key="reg_btn_3_atras")
-    if b2.button("Crear mi cuenta", type="primary", use_container_width=True, key="reg_btn_crear"):
+    if b2.button("Crear cuenta", type="primary", use_container_width=True, key="reg_btn_crear"):
         aparatos = [
             {k: v for k, v in {
                 "catalogo_id": int(clave),
@@ -318,17 +318,21 @@ def _paso_3(ss) -> None:
             aparatos=aparatos,
         )
         if ok:
-            email, password = datos["email"], datos["password"]
+            # El administrador sigue en su sesión: solo confirmamos y dejamos el formulario limpio
+            nombre, email, n = datos["full_name"], datos["email"], len(aparatos)
             _limpiar_estado()
-            if login(email, password):
-                st.session_state.pop("home_modo", None)
-                st.session_state["bienvenida_aparatos"] = len(aparatos)
-                st.rerun()
+            st.session_state["registro_ok"] = (
+                f"Cuenta creada para {nombre} ({email}) con {n} aparato(s). Ya puede iniciar sesión."
+            )
+            st.rerun()
         else:
             st.caption("Si el correo ya está registrado, vuelve al paso 1 para cambiarlo.")
 
 
 def render_registro() -> None:
+    aviso = st.session_state.pop("registro_ok", None)
+    if aviso:
+        st.success(aviso)
     ss = _estado()
     paso = ss["reg_paso"]
     _indicador_pasos(paso)

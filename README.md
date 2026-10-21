@@ -252,7 +252,7 @@ Conectado directamente a las APIs externas y la telemetría del usuario, el sist
 Para demostrar la capacidad autónoma del backend, el panel predictivo de Streamlit incluye un simulador dinámico donde el usuario puede manipular el porcentaje de riesgo de corte eléctrico y observar en tiempo real cómo el Agente de IA altera las métricas de **Modo del Orquestador**, **Objetivo de Carga**, **Flujo Fotovoltaico** y calcula la **Autonomía en horas de respaldo** según los consumos históricos.
 
 ### G. Perfil Energético por Aparatos
-Al registrarse, cada usuario elige su tipo de entidad (hogar, negocio, empresa, institución, finca o comunidad) y los aparatos que tiene, a partir de un catálogo con potencia y horas de uso típicas; si conoce la potencia o las horas reales de un aparato puede escribirlas. Con ese inventario:
+Las cuentas nuevas las crea el administrador (Administración → Directorio → Registrar hogar o negocio); no hay registro público. Para cada usuario se elige su tipo de entidad (hogar, negocio, empresa, institución, finca o comunidad) y los aparatos que tiene, a partir de un catálogo con potencia y horas de uso típicas; si conoce la potencia o las horas reales de un aparato puede escribirlas. Con ese inventario:
 * **Mis aparatos** estima cuánto consume y cuesta cada aparato al mes. Cuando hay factura, las estimaciones se ajustan al consumo real y la diferencia aparece como consumo no identificado.
 * **Recomendaciones, alertas y Mi Día** nombran los aparatos del usuario: cuál pesa más en la factura, qué reemplazar, qué apagar primero y, si tiene paneles, qué equipos usar en la franja de más sol del pronóstico.
 * **El simulador solar** (Dashboard y Predicciones) calcula los kWp y la batería sugeridos con la factura o con el inventario, descontando un 20% de pérdidas, en lugar de usar un tamaño fijo.
@@ -304,7 +304,7 @@ Este script creará:
 | **PYME Piloto (Hotel)** | `hotel@agentesolar.co` | `hotel123` | Vista analítica comercial completa (Empresa) |
 | **Analista Técnico** | `analista@agentesolar.co` | `analista123` | Telemetría del inversor y radiación cruda |
 
-*Para simular una cuenta residencial de **Hogar**, puedes cerrar sesión y registrar una nueva cuenta al instante en la pestaña **Registrarse** del portal de inicio.*
+*Para simular una cuenta residencial de **Hogar**, inicia sesión como administrador, regístrala en **Administración → Directorio → Registrar hogar o negocio** y luego entra con esa cuenta.*
 
 ---
 
@@ -351,7 +351,7 @@ Este script creará:
 │           └── agente_recomendaciones.py # Recomendador adaptativo por perfil (Gemini + Reglas)
 ├── streamlit_app/                # Frontend en Streamlit
 │   ├── Home.py                   # Landing page, Login y Registro adaptativo de usuarios
-│   ├── registro.py               # Registro en 3 pasos: tipo de entidad, aparatos y consumo opcional
+│   ├── registro.py               # Registro (solo admin) en 3 pasos: tipo de entidad, aparatos y consumo opcional
 │   ├── inventario.py             # Lógica de la tabla editable de aparatos (sin Streamlit, con pruebas)
 │   ├── api_client.py             # Cliente HTTP REST centralizado con control de sesiones
 │   └── pages/                    # Páginas y Vistas Interactivas

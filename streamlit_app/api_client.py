@@ -146,6 +146,7 @@ def register(
         resp = requests.post(
             f"{API_BASE_URL}{API_PREFIX}/auth/register",
             json=payload,
+            headers=_get_headers(),  # solo un administrador puede registrar usuarios
             timeout=15,
         )
         if resp.status_code in (200, 201):

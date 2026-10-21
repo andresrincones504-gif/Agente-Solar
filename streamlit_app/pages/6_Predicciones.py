@@ -169,7 +169,7 @@ st.write("")
 render_section_header("Orquestación Autónoma de Respaldo", "spark", "Orquestador inteligente de baterías y excedentes solares ante apagones.")
 
 st.markdown(
-    f"El Agente Solar de {CIUDAD} implementa un **algoritmo de orquestación proactiva** "
+    f"En {CIUDAD}, Ka’i implementa un **algoritmo de orquestación proactiva** "
     "que vincula las predicciones de apagones con el control físico del banco de baterías "
     "y los excedentes fotovoltaicos. Ajusta el simulador de abajo para ver cómo responde la IA:"
 )

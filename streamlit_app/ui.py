@@ -190,7 +190,7 @@ def render_sidebar_autenticado(user: dict | None) -> None:
             render_html_block(
                 f"""
                 <div class="ag-user-card">
-                    <span class="ag-user-card__avatar">{escape(_iniciales(nombre))}</span>
+                    <span class="ag-user-card__avatar notranslate" translate="no">{escape(_iniciales(nombre))}</span>
                     <div class="ag-user-card__text">
                         <div class="ag-user-card__name">{escape(nombre)}</div>
                         {correo_html}

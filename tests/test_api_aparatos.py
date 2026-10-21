@@ -17,9 +17,9 @@ def base(crear_empresa, crear_usuario):
     return hotel
 
 
-def registrar(cliente, email, **campos):
+def registrar(cliente, email, headers=None, **campos):
     datos = {"email": email, "password": CLAVE, "full_name": "Ana", "escenario_usuario": "real", **campos}
-    return cliente.post(B + "/auth/register", json=datos)
+    return cliente.post(B + "/auth/register", json=datos, headers=headers)
 
 
 def codigos(respuesta):
@@ -33,19 +33,24 @@ def test_catalogo_filtra_por_categoria_y_texto_sin_tildes(cliente):
     assert cliente.get(B + "/catalogo/aparatos", params={"categoria": "marciano"}).status_code == 422
 
 
-def test_registro_publico_no_permite_admin_ni_empresa_ajena(cliente, base, token):
-    assert registrar(cliente, "x1@t.co", role="admin").status_code == 403
-    assert registrar(cliente, "x2@t.co", empresa_id=base.id).status_code == 403
-    r = cliente.post(B + "/auth/register", headers=token("admin@t.co"),
+def test_solo_el_admin_puede_registrar_usuarios(cliente, base, token):
+    # Sin sesión no hay registro público, y un usuario empresa tampoco puede registrar
+    assert registrar(cliente, "x1@t.co", tipo_entidad="hogar").status_code == 401
+    assert registrar(cliente, "x2@t.co", headers=token("hotel@t.co"), tipo_entidad="hogar").status_code == 403
+    admin = token("admin@t.co")
+    assert registrar(cliente, "x3@t.co", headers=admin, tipo_entidad="hogar").status_code == 201
+    assert registrar(cliente, "x4@t.co", headers=admin, empresa_id=base.id).status_code == 201
+    r = cliente.post(B + "/auth/register", headers=admin,
                      json={"email": "analista@t.co", "password": CLAVE, "full_name": "A", "role": "analista"})
     assert r.status_code == 201
 
 
-def test_registro_con_aparatos_es_una_sola_transaccion(cliente, base, catalogo, Sesion):
+def test_registro_con_aparatos_es_una_sola_transaccion(cliente, base, catalogo, Sesion, token):
+    admin = token("admin@t.co")
     aparatos = [{"catalogo_id": catalogo["nevera"].id},
                 {"catalogo_id": catalogo["aire_12000"].id, "potencia_w": 1100},
                 {"nombre": "Acuario", "potencia_w": 30, "horas_uso_dia": 24}]
-    r = registrar(cliente, "ana@t.co", nombre_empresa="Casa Ana", tipo_entidad="hogar", aparatos=aparatos)
+    r = registrar(cliente, "ana@t.co", admin, nombre_empresa="Casa Ana", tipo_entidad="hogar", aparatos=aparatos)
     assert r.status_code == 201, r.text
 
     def conteo():
@@ -57,14 +62,14 @@ def test_registro_con_aparatos_es_una_sola_transaccion(cliente, base, catalogo, 
             s.close()
 
     antes = conteo()
-    r = registrar(cliente, "malo@t.co", tipo_entidad="negocio",
+    r = registrar(cliente, "malo@t.co", admin, tipo_entidad="negocio",
                   aparatos=[{"catalogo_id": catalogo["nevera"].id}, {"catalogo_id": 99999}])
     assert r.status_code == 400 and "99999" in r.text
     assert conteo() == antes, "un registro fallido no deja usuario, empresa, configuración ni aparatos"
 
-    assert registrar(cliente, "malo2@t.co", aparatos=[{"nombre": "Algo"}]).status_code == 422
+    assert registrar(cliente, "malo2@t.co", admin, aparatos=[{"nombre": "Algo"}]).status_code == 422
 
-    registrar(cliente, "viejo@t.co", tipo_empresa="hotel", nombre_empresa="Hotel Viejo")
+    registrar(cliente, "viejo@t.co", admin, tipo_empresa="hotel", nombre_empresa="Hotel Viejo")
     s = Sesion()
     assert s.query(m.Empresa).filter_by(nombre="Hotel Viejo").one().tipo_entidad == "empresa"
     s.close()
@@ -75,7 +80,7 @@ def ana(cliente, base, catalogo, token):
     aparatos = [{"catalogo_id": catalogo["nevera"].id},
                 {"catalogo_id": catalogo["aire_12000"].id, "potencia_w": 1100},
                 {"nombre": "Acuario", "potencia_w": 30, "horas_uso_dia": 24}]
-    r = registrar(cliente, "ana@t.co", nombre_empresa="Casa Ana", tipo_entidad="hogar", aparatos=aparatos)
+    r = registrar(cliente, "ana@t.co", token("admin@t.co"), nombre_empresa="Casa Ana", tipo_entidad="hogar", aparatos=aparatos)
     return r.json()["empresa_id"], token("ana@t.co")
 
 

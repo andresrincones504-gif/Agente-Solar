@@ -65,3 +65,31 @@ def calcular_cambios(
         if payload:
             cambios.append((aparato_id, antes["Aparato"], payload))
     return cambios, borrar
+
+
+def payload_edicion(
+    aparato: Dict,
+    cantidad: int,
+    potencia: Optional[float],
+    horas: Optional[float],
+) -> Dict:
+    """
+    Campos a enviar cuando se edita un aparato desde la ventana de edición.
+
+    - la cantidad se envía si cambió;
+    - potencia u horas vacías vuelven al valor típico (null), solo si el usuario tenía un valor propio;
+    - un valor distinto al que se usa hoy en los cálculos se envía tal cual.
+    """
+    payload: Dict = {}
+    if int(cantidad) != int(aparato["cantidad"]):
+        payload["cantidad"] = int(cantidad)
+    for campo, efectivo, nuevo in (
+        ("potencia_w", aparato["potencia_efectiva_w"], potencia),
+        ("horas_uso_dia", aparato["horas_efectivas_dia"], horas),
+    ):
+        if nuevo is None:
+            if aparato.get(campo) is not None:
+                payload[campo] = None
+        elif float(nuevo) != float(efectivo):
+            payload[campo] = float(nuevo)
+    return payload

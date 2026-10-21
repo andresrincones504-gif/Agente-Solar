@@ -59,3 +59,17 @@ def test_busqueda_sin_tildes_en_nombre_descripcion_y_palabras_clave():
     assert coincide(portatil, "LAPTOP")
     assert coincide(portatil, "")
     assert not coincide(portatil, "nevera")
+
+
+def test_payload_de_la_ventana_de_edicion():
+    payload_edicion = inventario.payload_edicion
+    nevera_exh, vitrina, nevera, bombillo = APARATOS
+    # Sin cambios: no se envía nada
+    assert payload_edicion(nevera_exh, 1, 400, 14) == {}
+    # Cantidad y un valor propio nuevo
+    assert payload_edicion(bombillo, 12, 9, 4) == {"cantidad": 12}
+    assert payload_edicion(nevera_exh, 1, 350, 14) == {"potencia_w": 350.0}
+    # Vaciar un campo vuelve al típico solo si el usuario tenía un valor propio
+    assert payload_edicion(vitrina, 1, None, None) == {"potencia_w": None, "horas_uso_dia": None}
+    assert payload_edicion(nevera, 1, None, None) == {"potencia_w": None}
+    assert payload_edicion(nevera_exh, 1, None, None) == {}
