@@ -994,6 +994,163 @@ div[role="dialog"]:has(.ag-dialogo-borrar) .stButton button[kind="primary"]:hove
     border-color: #B9554C;
 }}
 
+/* ---------- Agregar aparatos: catálogo por categorías ---------- */
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) {{
+    padding: 1.4rem 1.6rem !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
+    background: linear-gradient(180deg, rgba(16, 31, 41, 0.92), rgba(12, 24, 33, 0.92));
+}}
+.ag-add-caption {{
+    font-size: 0.85rem;
+    color: var(--muted);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"] {{
+    --cat-color: var(--muted);
+    --cat-fondo: rgba(154, 176, 187, 0.12);
+    --cat-borde: rgba(154, 176, 187, 0.4);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"]:has(.ag-cat--refrigeracion) {{
+    --cat-color: #39B982;
+    --cat-fondo: rgba(57, 185, 130, 0.12);
+    --cat-borde: rgba(57, 185, 130, 0.4);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"]:has(.ag-cat--climatizacion) {{
+    --cat-color: #7DB6E3;
+    --cat-fondo: rgba(76, 152, 211, 0.12);
+    --cat-borde: rgba(76, 152, 211, 0.4);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"]:has(.ag-cat--iluminacion) {{
+    --cat-color: #E3B866;
+    --cat-fondo: rgba(216, 162, 74, 0.12);
+    --cat-borde: rgba(216, 162, 74, 0.4);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"]:has(.ag-cat--cocina) {{
+    --cat-color: #D9A441;
+    --cat-fondo: rgba(217, 164, 65, 0.12);
+    --cat-borde: rgba(217, 164, 65, 0.4);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"]:has(.ag-cat--lavado) {{
+    --cat-color: #7DB6E3;
+    --cat-fondo: rgba(76, 152, 211, 0.12);
+    --cat-borde: rgba(76, 152, 211, 0.4);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"]:has(.ag-cat--entretenimiento) {{
+    --cat-color: #5CC9AE;
+    --cat-fondo: rgba(47, 163, 138, 0.12);
+    --cat-borde: rgba(47, 163, 138, 0.4);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"]:has(.ag-cat--cuidado_personal) {{
+    --cat-color: #E08A80;
+    --cat-fondo: rgba(212, 106, 96, 0.12);
+    --cat-borde: rgba(212, 106, 96, 0.4);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"]:has(.ag-cat--oficina) {{
+    --cat-color: #7DB6E3;
+    --cat-fondo: rgba(76, 152, 211, 0.12);
+    --cat-borde: rgba(76, 152, 211, 0.4);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"]:has(.ag-cat--bombas_motores) {{
+    --cat-color: #B5C6CE;
+    --cat-fondo: rgba(154, 176, 187, 0.12);
+    --cat-borde: rgba(154, 176, 187, 0.4);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"] details {{
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(15, 29, 39, 0.65);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"] summary {{
+    padding: 0.75rem 0.9rem;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"] summary:hover [data-testid="stExpanderToggleIcon"] {{
+    border-color: var(--cat-borde);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpanderIcon"] {{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    margin-right: 0.55rem;
+    border-radius: 8px;
+    border: 1px solid var(--cat-borde);
+    background: var(--cat-fondo);
+    color: var(--cat-color);
+    font-size: 1.15rem;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"] summary strong {{
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"] summary p span.has-background-color {{
+    margin-left: 0.6rem;
+    padding: 0.12rem 0.6rem !important;
+    border-radius: 999px;
+    border: 1px solid var(--cat-borde);
+    background-color: var(--cat-fondo) !important;
+    color: var(--cat-color);
+    font-size: 0.75rem;
+    font-weight: 600;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpanderToggleIcon"] {{
+    width: 1.9rem;
+    height: 1.9rem;
+    padding: 0.3rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpanderDetails"] {{
+    padding: 0 0.9rem 0.3rem;
+    border-top: 1px solid var(--border);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpanderDetails"] [data-testid="stVerticalBlock"] {{
+    gap: 0;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="element-container"]:has(> [data-testid="stHtml"] > .ag-cat) {{
+    display: none;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpanderDetails"] [data-testid="element-container"]:has([data-testid="stCheckbox"]) {{
+    padding: 0.65rem 0;
+    border-bottom: 1px solid rgba(33, 58, 73, 0.6);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpanderDetails"] [data-testid="element-container"]:has([data-testid="stCheckbox"]):last-child {{
+    border-bottom: none;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stCheckbox"] label {{
+    width: 100%;
+    align-items: flex-start;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stCheckbox"] label > div:last-child {{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stCheckbox"] [data-testid="stWidgetLabel"],
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stCheckbox"] [data-testid="stWidgetLabel"] [data-testid="stMarkdownContainer"] {{
+    flex: 1 1 auto;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stCheckbox"] [data-testid="stWidgetLabel"] p {{
+    font-size: 0.95rem;
+    line-height: 1.35;
+    color: var(--text);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stCheckbox"] [data-testid="stWidgetLabel"] p > span {{
+    display: block;
+    margin-top: 0.1rem;
+    font-size: 0.82rem;
+    color: var(--muted) !important;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stCheckbox"] [data-testid="stTooltipIcon"] {{
+    color: var(--muted);
+}}
+
 /* ---------- Cambio de pantalla suave ---------- */
 /* El menú automático de Streamlit se reemplaza por el propio (ui.render_menu) */
 [data-testid="stSidebarNav"] {{
