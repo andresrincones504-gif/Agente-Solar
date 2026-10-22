@@ -94,8 +94,6 @@ def render_estado_asistente(user: dict) -> None:
         tone=mensaje["tono"],
         badge_tinted=True,
     )
-    if estado == "sin_clave" and user.get("role") == "admin":
-        st.caption("Solo lo ves como administrador: para activar el asistente inteligente falta poner la clave de Gemini (GEMINI_API_KEY) en el archivo .env.")
 
     # Solo cuando no hay conexión se ofrece volver a revisar (los consejos están en el menú lateral)
     if estado in ("sin_conexion", "sin_respuesta"):
