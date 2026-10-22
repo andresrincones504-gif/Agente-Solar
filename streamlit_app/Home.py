@@ -161,13 +161,20 @@ LOGIN_CSS = """
     font-weight: 400;
     color: var(--text);
 }
+/* Campos y botones comparten exactamente el mismo alto, ancho, borde y esquinas */
+[data-testid="stForm"] {
+    --alto-campo: 3.25rem;
+}
 [data-testid="stForm"] [data-baseweb="input"] {
-    min-height: 3.25rem;
+    box-sizing: border-box;
+    height: var(--alto-campo);
+    min-height: var(--alto-campo);
     border-radius: 6px;
-    border: 1px solid #1E3341;
+    border: 1px solid #2A4556;
     background: #0C1820;
 }
 [data-testid="stForm"] [data-baseweb="input"] > div {
+    height: 100%;
     background: #0C1820 !important;
     border-radius: 6px;
 }
@@ -179,8 +186,10 @@ LOGIN_CSS = """
     width: 100%;
 }
 [data-testid="stFormSubmitButton"] button {
-    min-height: 3.25rem;
-    border: none;
+    box-sizing: border-box;
+    height: var(--alto-campo);
+    min-height: var(--alto-campo);
+    border: 1px solid transparent;
     border-radius: 6px;
     color: #FFFFFF;
 }
@@ -223,9 +232,8 @@ LOGIN_CSS = """
 }
 /* Pantallas bajas (portátiles pequeños, celular acostado): todo más compacto */
 @media (max-height: 640px) {
-    [data-testid="stForm"] [data-baseweb="input"],
-    [data-testid="stFormSubmitButton"] button {
-        min-height: 2.9rem;
+    [data-testid="stForm"] {
+        --alto-campo: 2.9rem;
     }
     [data-testid="stFormSubmitButton"] button[kind="primaryFormSubmit"] {
         margin-top: 0.6rem;
@@ -239,9 +247,8 @@ LOGIN_CSS = """
     [data-testid="stAppViewBlockContainer"] {
         max-width: 540px;
     }
-    [data-testid="stForm"] [data-baseweb="input"],
-    [data-testid="stFormSubmitButton"] button {
-        min-height: 3.6rem;
+    [data-testid="stForm"] {
+        --alto-campo: 3.6rem;
     }
 }
 """

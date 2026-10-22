@@ -432,75 +432,99 @@ if aparatos:
 # ---------------------------------------------------------------------------
 # Agregar aparatos
 # ---------------------------------------------------------------------------
-render_section_header("Agregar aparatos", "upload", "Busca por nombre, con o sin tildes, y marca uno o varios.")
-catalogo = get_catalogo_aparatos(tipo_entidad) or []
-if not catalogo:
-    st.warning("No pudimos cargar la lista de aparatos en este momento.")
-else:
-    por_id = {a["id"]: a for a in catalogo}
-    seleccion = ss.setdefault("agregar_sel", [])  # ids elegidos; se conservan al cambiar la búsqueda
-    seleccion[:] = [i for i in seleccion if i in por_id]
+# Ícono (Material) de cada categoría en la lista para agregar
+ICONO_CATEGORIA = {
+    "refrigeracion": ":material/kitchen:",
+    "climatizacion": ":material/mode_fan:",
+    "iluminacion": ":material/lightbulb:",
+    "cocina": ":material/blender:",
+    "lavado": ":material/local_laundry_service:",
+    "entretenimiento": ":material/tv:",
+    "cuidado_personal": ":material/spa:",
+    "oficina": ":material/computer:",
+    "bombas_motores": ":material/build:",
+}
 
-    def _alternar_agregar(aparato_id: int) -> None:
-        marcado = ss.get(f"agregar_chk_{aparato_id}")
-        if marcado and aparato_id not in ss["agregar_sel"]:
-            ss["agregar_sel"].append(aparato_id)
-        elif not marcado and aparato_id in ss["agregar_sel"]:
-            ss["agregar_sel"].remove(aparato_id)
+with st.container(border=True):
+    render_section_header("Agregar aparatos", "upload", "Busca por nombre, con o sin tildes, y marca uno o varios.")
+    catalogo = get_catalogo_aparatos(tipo_entidad) or []
+    if not catalogo:
+        st.warning("No pudimos cargar la lista de aparatos en este momento.")
+    else:
+        por_id = {a["id"]: a for a in catalogo}
+        seleccion = ss.setdefault("agregar_sel", [])  # ids elegidos; se conservan al cambiar la búsqueda
+        seleccion[:] = [i for i in seleccion if i in por_id]
 
-    busqueda = st.text_input(
-        "Buscar en el catálogo",
-        placeholder="Escribe por ejemplo: nevera, aire, portatil, bomba…",
-        key="agregar_buscar",
-    )
-    filtrados = [a for a in catalogo if coincide(a, busqueda)]
-    st.caption(f"{len(seleccion)} elegidos · mostrando {len(filtrados)} de {len(catalogo)} aparatos")
-    with st.container(height=260, border=True):
-        if not filtrados:
-            st.info("Ningún aparato coincide. Puedes agregarlo como aparato propio más abajo.")
-        for a in filtrados:
-            st.checkbox(
-                f"{a['nombre']} — {a.get('descripcion') or ''}",
-                value=a["id"] in seleccion,
-                key=f"agregar_chk_{a['id']}",
-                on_change=_alternar_agregar,
-                args=(a["id"],),
-                help=f"Uso típico: {a['potencia_w']:.0f} W durante {a['horas_uso_dia']:g} h/día ≈ {a['consumo_kwh_mes']:.0f} kWh/mes",
-            )
-    elegidos = list(seleccion)
-    cantidades = {}
-    if elegidos:
-        cols = st.columns(min(len(elegidos), 4))
-        for n, i in enumerate(elegidos):
-            cantidades[i] = cols[n % len(cols)].number_input(
-                f"Cantidad · {por_id[i]['nombre']}", min_value=1, max_value=500, value=1, step=1,
-                key=f"agregar_cant_{i}_{ss['aparatos_version']}",
-            )
-    if st.button(
-        f"Agregar {len(elegidos)} aparato(s)" if elegidos else "Agregar",
-        disabled=not elegidos, key="agregar_btn",
-    ):
-        resp = api_post(f"/empresas/{empresa_id}/aparatos", json=[{"catalogo_id": i, "cantidad": int(cantidades.get(i, 1))} for i in elegidos])
-        if resp is not None:
-            for i in elegidos:
-                ss.pop(f"agregar_chk_{i}", None)
-            ss["agregar_sel"] = []
-            _recargar(f"Agregados: {', '.join(a['nombre'] for a in resp)}.")
+        def _alternar_agregar(aparato_id: int) -> None:
+            marcado = ss.get(f"agregar_chk_{aparato_id}")
+            if marcado and aparato_id not in ss["agregar_sel"]:
+                ss["agregar_sel"].append(aparato_id)
+            elif not marcado and aparato_id in ss["agregar_sel"]:
+                ss["agregar_sel"].remove(aparato_id)
 
-with st.expander("¿No está en la lista? Agrega un aparato propio"):
-    with st.form("form_aparato_propio", clear_on_submit=True):
-        c1, c2, c3, c4 = st.columns([2, 1, 1, 1])
-        nombre_p = c1.text_input("Nombre", placeholder="Ej: acuario, vitrina calentadora")
-        potencia_p = c2.number_input("Potencia (W)", min_value=1.0, max_value=200000.0, value=None, placeholder="Ej: 300")
-        horas_p = c3.number_input("Horas al día", min_value=0.0, max_value=24.0, value=None, step=0.5, placeholder="Ej: 2")
-        cantidad_p = c4.number_input("Cantidad", min_value=1, max_value=500, value=1, step=1)
-        if st.form_submit_button("Agregar aparato propio"):
-            if len((nombre_p or "").strip()) < 2 or potencia_p is None or horas_p is None:
-                st.error("Completa nombre, potencia y horas de uso.")
-            else:
-                resp = api_post(
-                    f"/empresas/{empresa_id}/aparatos",
-                    json=[{"nombre": nombre_p.strip(), "potencia_w": potencia_p, "horas_uso_dia": horas_p, "cantidad": int(cantidad_p)}],
+        busqueda = st.text_input(
+            "Buscar en el catálogo",
+            placeholder="Escribe por ejemplo: nevera, aire, portatil, bomba…",
+            key="agregar_buscar",
+        )
+        filtrados = [a for a in catalogo if coincide(a, busqueda)]
+        render_html_block(
+            f'<div class="ag-add-caption">{len(seleccion)} elegidos · mostrando {len(filtrados)} de {len(catalogo)} aparatos</div>'
+        )
+        with st.container(height=470, border=False):
+            if not filtrados:
+                st.info("Ningún aparato coincide. Puedes agregarlo como aparato propio más abajo.")
+            # Una sección desplegable por categoría, en el orden del catálogo
+            orden = {t: n for n, t in enumerate(TIPOS_APARATO)}
+            categorias = sorted({a["tipo_aparato"] for a in filtrados}, key=lambda t: orden.get(t, 99))
+            for tipo in categorias:
+                del_tipo = [a for a in filtrados if a["tipo_aparato"] == tipo]
+                marcados = sum(1 for a in del_tipo if a["id"] in seleccion)
+                etiqueta = f"**{TIPOS_APARATO.get(tipo, tipo.title())}** :gray-background[{len(del_tipo)} disponibles]"
+                with st.expander(etiqueta, expanded=bool(busqueda) or marcados > 0, icon=ICONO_CATEGORIA.get(tipo, ":material/category:")):
+                    render_html_block(f'<span class="ag-cat ag-cat--{tipo}"></span>')
+                    for a in del_tipo:
+                        st.checkbox(
+                            f"{a['nombre']} :gray[{a.get('descripcion') or ''}]",
+                            value=a["id"] in seleccion,
+                            key=f"agregar_chk_{a['id']}",
+                            on_change=_alternar_agregar,
+                            args=(a["id"],),
+                            help=f"Uso típico: {a['potencia_w']:.0f} W durante {a['horas_uso_dia']:g} h/día ≈ {a['consumo_kwh_mes']:.0f} kWh/mes",
+                        )
+        elegidos = list(seleccion)
+        cantidades = {}
+        if elegidos:
+            cols = st.columns(min(len(elegidos), 4))
+            for n, i in enumerate(elegidos):
+                cantidades[i] = cols[n % len(cols)].number_input(
+                    f"Cantidad · {por_id[i]['nombre']}", min_value=1, max_value=500, value=1, step=1,
+                    key=f"agregar_cant_{i}_{ss['aparatos_version']}",
                 )
-                if resp is not None:
-                    _recargar(f"Agregado: {nombre_p.strip()}.")
+        if st.button(
+            f"Agregar {len(elegidos)} aparato(s)" if elegidos else "Agregar",
+            disabled=not elegidos, key="agregar_btn",
+        ):
+            resp = api_post(f"/empresas/{empresa_id}/aparatos", json=[{"catalogo_id": i, "cantidad": int(cantidades.get(i, 1))} for i in elegidos])
+            if resp is not None:
+                for i in elegidos:
+                    ss.pop(f"agregar_chk_{i}", None)
+                ss["agregar_sel"] = []
+                _recargar(f"Agregados: {', '.join(a['nombre'] for a in resp)}.")
+    with st.expander("¿No está en la lista? Agrega un aparato propio"):
+        with st.form("form_aparato_propio", clear_on_submit=True):
+            c1, c2, c3, c4 = st.columns([2, 1, 1, 1])
+            nombre_p = c1.text_input("Nombre", placeholder="Ej: acuario, vitrina calentadora")
+            potencia_p = c2.number_input("Potencia (W)", min_value=1.0, max_value=200000.0, value=None, placeholder="Ej: 300")
+            horas_p = c3.number_input("Horas al día", min_value=0.0, max_value=24.0, value=None, step=0.5, placeholder="Ej: 2")
+            cantidad_p = c4.number_input("Cantidad", min_value=1, max_value=500, value=1, step=1)
+            if st.form_submit_button("Agregar aparato propio"):
+                if len((nombre_p or "").strip()) < 2 or potencia_p is None or horas_p is None:
+                    st.error("Completa nombre, potencia y horas de uso.")
+                else:
+                    resp = api_post(
+                        f"/empresas/{empresa_id}/aparatos",
+                        json=[{"nombre": nombre_p.strip(), "potencia_w": potencia_p, "horas_uso_dia": horas_p, "cantidad": int(cantidad_p)}],
+                    )
+                    if resp is not None:
+                        _recargar(f"Agregado: {nombre_p.strip()}.")
