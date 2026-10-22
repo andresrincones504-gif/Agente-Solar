@@ -109,7 +109,7 @@ if not show_details:
 render_section_header("Gestión de Datos", "settings", "Sube archivos o modifica registros individualmente.")
 st.caption("Referencia rápida: 'Demanda pico' es la máxima potencia requerida en un intervalo; ayuda a detectar sobrecargas y penalizaciones.")
 
-tab1, tab2, tab3, tab4 = st.tabs(["Histórico", "Cargar archivo CSV", "Registro manual", "Registrar Factura Mensual"])
+tab1, tab4 = st.tabs(["Histórico", "Registrar Factura Mensual"])
 
 with tab1:
     st.markdown(" ") # Spacer 
@@ -147,96 +147,96 @@ with tab1:
     else:
         st.info("Sin registros de consumo.")
 
-with tab2:
-    st.markdown(" ") # Spacer
-    st.markdown(
-        """
-        #### Carga Batch de Datos
-        - `fecha`: YYYY-MM-DD o YYYY-MM-DD HH:MM:SS
-        - `consumo_kwh`: numero requerido
-        - Opcionales: `costo_cop`, `demanda_pico_kw`, `produccion_solar_kwh`, `nivel_bateria_pct`, `periodo`
-        """
-    )
+# with tab2:
+#     st.markdown(" ") # Spacer
+#     st.markdown(
+#         """
+#         #### Carga Batch de Datos
+#         - `fecha`: YYYY-MM-DD o YYYY-MM-DD HH:MM:SS
+#         - `consumo_kwh`: numero requerido
+#         - Opcionales: `costo_cop`, `demanda_pico_kw`, `produccion_solar_kwh`, `nivel_bateria_pct`, `periodo`
+#         """
+#     )
 
-    plantilla = pd.DataFrame(
-        {
-            "fecha": ["2026-01-01", "2026-01-02", "2026-01-03"],
-            "consumo_kwh": [120.5, 135.2, 110.8],
-            "costo_cop": [113550, 127430, 104484],
-            "demanda_pico_kw": [15.2, 18.4, 14.1],
-            "produccion_solar_kwh": [45.0, 50.2, 42.8],
-            "nivel_bateria_pct": [85.0, 78.0, 90.0],
-            "periodo": ["diario", "diario", "diario"],
-        }
-    )
-    csv_template = plantilla.to_csv(index=False).encode("utf-8")
-    st.download_button("Descargar plantilla CSV", data=csv_template, file_name="plantilla_consumo.csv", mime="text/csv")
+#     plantilla = pd.DataFrame(
+#         {
+#             "fecha": ["2026-01-01", "2026-01-02", "2026-01-03"],
+#             "consumo_kwh": [120.5, 135.2, 110.8],
+#             "costo_cop": [113550, 127430, 104484],
+#             "demanda_pico_kw": [15.2, 18.4, 14.1],
+#             "produccion_solar_kwh": [45.0, 50.2, 42.8],
+#             "nivel_bateria_pct": [85.0, 78.0, 90.0],
+#             "periodo": ["diario", "diario", "diario"],
+#         }
+#     )
+#     csv_template = plantilla.to_csv(index=False).encode("utf-8")
+#     st.download_button("Descargar plantilla CSV", data=csv_template, file_name="plantilla_consumo.csv", mime="text/csv")
 
-    archivo = st.file_uploader("Selecciona un archivo CSV o XLSX", type=["csv", "xlsx", "xls"])
-    if archivo:
-        st.success(f"Archivo seleccionado: {archivo.name} ({archivo.size / 1024:.1f} KB)")
-        try:
-            df_preview = pd.read_csv(archivo) if archivo.name.endswith(".csv") else pd.read_excel(archivo)
-            st.dataframe(df_preview.head(), use_container_width=True)
-            archivo.seek(0)
-        except Exception as exc:
-            st.error(f"Error leyendo archivo: {exc}")
+#     archivo = st.file_uploader("Selecciona un archivo CSV o XLSX", type=["csv", "xlsx", "xls"])
+#     if archivo:
+#         st.success(f"Archivo seleccionado: {archivo.name} ({archivo.size / 1024:.1f} KB)")
+#         try:
+#             df_preview = pd.read_csv(archivo) if archivo.name.endswith(".csv") else pd.read_excel(archivo)
+#             st.dataframe(df_preview.head(), use_container_width=True)
+#             archivo.seek(0)
+#         except Exception as exc:
+#             st.error(f"Error leyendo archivo: {exc}")
 
-        if st.button("Subir y procesar", type="primary"):
-            token = st.session_state.get("token")
-            files = {"file": (archivo.name, archivo.getvalue(), archivo.type)}
-            try:
-                response = requests.post(
-                    f"{API_BASE_URL}{API_PREFIX}/consumo/upload/{empresa_id}",
-                    headers={"Authorization": f"Bearer {token}"},
-                    files=files,
-                    params={"escenario": get_active_scenario()},
-                    timeout=120,
-                )
-                if response.status_code == 200:
-                    payload = response.json()
-                    st.success(payload.get("mensaje", "Carga completada."))
-                    st.metric("Registros insertados", payload.get("registros_insertados", 0))
-                    if payload.get("errores"):
-                        with st.expander(f"Errores detectados ({len(payload['errores'])})"):
-                            for error in payload["errores"][:50]:
-                                st.text(error)
-                else:
-                    detalle = response.json().get("detail", response.text)
-                    st.error(f"Error {response.status_code}: {detalle}")
-            except Exception as exc:
-                st.error(f"Error en carga: {exc}")
+#         if st.button("Subir y procesar", type="primary"):
+#             token = st.session_state.get("token")
+#             files = {"file": (archivo.name, archivo.getvalue(), archivo.type)}
+#             try:
+#                 response = requests.post(
+#                     f"{API_BASE_URL}{API_PREFIX}/consumo/upload/{empresa_id}",
+#                     headers={"Authorization": f"Bearer {token}"},
+#                     files=files,
+#                     params={"escenario": get_active_scenario()},
+#                     timeout=120,
+#                 )
+#                 if response.status_code == 200:
+#                     payload = response.json()
+#                     st.success(payload.get("mensaje", "Carga completada."))
+#                     st.metric("Registros insertados", payload.get("registros_insertados", 0))
+#                     if payload.get("errores"):
+#                         with st.expander(f"Errores detectados ({len(payload['errores'])})"):
+#                             for error in payload["errores"][:50]:
+#                                 st.text(error)
+#                 else:
+#                     detalle = response.json().get("detail", response.text)
+#                     st.error(f"Error {response.status_code}: {detalle}")
+#             except Exception as exc:
+#                 st.error(f"Error en carga: {exc}")
 
-with tab3:
-    st.markdown(" ") # Spacer
-    with st.form("registro_manual"):
-        col_a, col_b = st.columns(2)
-        with col_a:
-            fecha = st.date_input("Fecha")
-            hora = st.time_input("Hora")
-            consumo = st.number_input("Consumo (kWh)", min_value=0.0, step=0.1)
-            costo = st.number_input("Costo (COP) opcional", min_value=0.0, step=100.0)
-        with col_b:
-            demanda = st.number_input("Demanda pico (kW) opcional", min_value=0.0, step=0.1)
-            produccion = st.number_input("Produccion solar (kWh) opcional", min_value=0.0, step=0.1)
-            bateria = st.number_input("Bateria (%) opcional", min_value=0.0, max_value=100.0, step=1.0)
-            periodo = st.selectbox("Periodo", ["diario", "horario", "mensual"])
+# with tab3:
+#     st.markdown(" ") # Spacer
+#     with st.form("registro_manual"):
+#         col_a, col_b = st.columns(2)
+#         with col_a:
+#             fecha = st.date_input("Fecha")
+#             hora = st.time_input("Hora")
+#             consumo = st.number_input("Consumo (kWh)", min_value=0.0, step=0.1)
+#             costo = st.number_input("Costo (COP) opcional", min_value=0.0, step=100.0)
+#         with col_b:
+#             demanda = st.number_input("Demanda pico (kW) opcional", min_value=0.0, step=0.1)
+#             produccion = st.number_input("Produccion solar (kWh) opcional", min_value=0.0, step=0.1)
+#             bateria = st.number_input("Bateria (%) opcional", min_value=0.0, max_value=100.0, step=1.0)
+#             periodo = st.selectbox("Periodo", ["diario", "horario", "mensual"])
 
-        if st.form_submit_button("Guardar"):
-            payload = {
-                "empresa_id": empresa_id,
-                "fecha": datetime.combine(fecha, hora).isoformat(),
-                "consumo_kwh": consumo,
-                "costo_cop": costo or None,
-                "demanda_pico_kw": demanda or None,
-                "produccion_solar_kwh": produccion,
-                "nivel_bateria_pct": bateria or None,
-                "periodo": periodo,
-            }
-            response = api_post("/consumo/", json=payload)
-            if response:
-                st.success("Registro guardado.")
-                st.rerun()
+#         if st.form_submit_button("Guardar"):
+#             payload = {
+#                 "empresa_id": empresa_id,
+#                 "fecha": datetime.combine(fecha, hora).isoformat(),
+#                 "consumo_kwh": consumo,
+#                 "costo_cop": costo or None,
+#                 "demanda_pico_kw": demanda or None,
+#                 "produccion_solar_kwh": produccion,
+#                 "nivel_bateria_pct": bateria or None,
+#                 "periodo": periodo,
+#             }
+#             response = api_post("/consumo/", json=payload)
+#             if response:
+#                 st.success("Registro guardado.")
+#                 st.rerun()
 
 with tab4:
     st.markdown(" ") # Spacer

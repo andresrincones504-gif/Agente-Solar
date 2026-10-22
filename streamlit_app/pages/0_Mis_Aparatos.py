@@ -78,50 +78,50 @@ def _barra_pct(pct: float) -> str:
     )
 
 
-def _tabla_aparatos_html(filas: list, stats: dict) -> str:
-    """Tabla de solo lectura por aparato, con resumen al pie."""
-    cuerpo = []
-    for f in filas:
-        etiqueta, clase = ORIGEN_DATO.get(f["origen_dato"], (str(f["origen_dato"]).title(), "ag-pill--tipico"))
-        cuerpo.append(
-            "<tr>"
-            f'<td class="ag-tabla__nombre">{escape(f["nombre"])}</td>'
-            f'<td class="ag-tabla__centro"><span class="ag-tabla__cantidad">{int(f["cantidad"] or 0)}</span></td>'
-            f'<td class="ag-tabla__derecha ag-tabla__num">{f["consumo_kwh_mes"]:,.1f}</td>'
-            f'<td class="ag-tabla__derecha ag-tabla__num">{_cop(f["costo_cop_mes"])}</td>'
-            f"<td>{_barra_pct(f.get('porcentaje'))}</td>"
-            f'<td class="ag-tabla__centro"><span class="ag-pill {clase}">{etiqueta}</span></td>'
-            "</tr>"
-        )
-    reales = [f for f in filas if f["aparato_id"] is not None]
-    unidades = sum(int(f["cantidad"] or 0) for f in reales)
-    return f"""
-    <div class="ag-tabla-titulo">Por aparato</div>
-    <div class="ag-tabla-wrap">
-        <table class="ag-tabla">
-            <thead><tr>
-                <th>Aparato</th>
-                <th class="ag-tabla__centro">Cantidad</th>
-                <th class="ag-tabla__derecha">kWh / mes</th>
-                <th class="ag-tabla__derecha">Costo / mes</th>
-                <th>% del total</th>
-                <th class="ag-tabla__centro">Dato</th>
-            </tr></thead>
-            <tbody>{"".join(cuerpo)}</tbody>
-        </table>
-        <div class="ag-tabla__pie">
-            <div class="ag-tabla__resumen">
-                <span>Aparatos listados: <b>{len(reales)} tipos</b></span>
-                <span>Unidades totales: <b>{unidades} aparatos</b></span>
-                <span>Costo estimado: <b>{_cop(stats["costo_total_cop_mes"])} /mes</b></span>
-            </div>
-            <div class="ag-tabla__total">
-                <span>Consumo total estimado:</span>
-                <span class="ag-tabla__total-valor">{stats["consumo_total_kwh_mes"]:,.1f} kWh/mes</span>
-            </div>
-        </div>
-    </div>
-    """
+# def _tabla_aparatos_html(filas: list, stats: dict) -> str:
+#     """Tabla de solo lectura por aparato, con resumen al pie."""
+#     cuerpo = []
+#     for f in filas:
+#         etiqueta, clase = ORIGEN_DATO.get(f["origen_dato"], (str(f["origen_dato"]).title(), "ag-pill--tipico"))
+#         cuerpo.append(
+#             "<tr>"
+#             f'<td class="ag-tabla__nombre">{escape(f["nombre"])}</td>'
+#             f'<td class="ag-tabla__centro"><span class="ag-tabla__cantidad">{int(f["cantidad"] or 0)}</span></td>'
+#             f'<td class="ag-tabla__derecha ag-tabla__num">{f["consumo_kwh_mes"]:,.1f}</td>'
+#             f'<td class="ag-tabla__derecha ag-tabla__num">{_cop(f["costo_cop_mes"])}</td>'
+#             f"<td>{_barra_pct(f.get('porcentaje'))}</td>"
+#             f'<td class="ag-tabla__centro"><span class="ag-pill {clase}">{etiqueta}</span></td>'
+#             "</tr>"
+#         )
+#     reales = [f for f in filas if f["aparato_id"] is not None]
+#     unidades = sum(int(f["cantidad"] or 0) for f in reales)
+#     return f"""
+#     <div class="ag-tabla-titulo">Por aparato</div>
+#     <div class="ag-tabla-wrap">
+#         <table class="ag-tabla">
+#             <thead><tr>
+#                 <th>Aparato</th>
+#                 <th class="ag-tabla__centro">Cantidad</th>
+#                 <th class="ag-tabla__derecha">kWh / mes</th>
+#                 <th class="ag-tabla__derecha">Costo / mes</th>
+#                 <th>% del total</th>
+#                 <th class="ag-tabla__centro">Dato</th>
+#             </tr></thead>
+#             <tbody>{"".join(cuerpo)}</tbody>
+#         </table>
+#         <div class="ag-tabla__pie">
+#             <div class="ag-tabla__resumen">
+#                 <span>Aparatos listados: <b>{len(reales)} tipos</b></span>
+#                 <span>Unidades totales: <b>{unidades} aparatos</b></span>
+#                 <span>Costo estimado: <b>{_cop(stats["costo_total_cop_mes"])} /mes</b></span>
+#             </div>
+#             <div class="ag-tabla__total">
+#                 <span>Consumo total estimado:</span>
+#                 <span class="ag-tabla__total-valor">{stats["consumo_total_kwh_mes"]:,.1f} kWh/mes</span>
+#             </div>
+#         </div>
+#     </div>
+#     """
 
 
 def _tabla_tipos_html(por_tipo: list) -> str:
@@ -372,8 +372,7 @@ else:
             "ajustamos todos en la misma proporción. Revisa las horas de uso para afinar la estimación."
         )
 
-    with st.expander("Ver la tabla por aparato y por tipo"):
-        render_html_block(_tabla_aparatos_html(filas, stats))
+    with st.expander("Ver la tabla por tipo"):
         render_html_block(_tabla_tipos_html(stats["por_tipo"]))
 
 # ---------------------------------------------------------------------------
