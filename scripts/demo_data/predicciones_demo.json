@@ -1,9 +1,9 @@
 [
   {
-    "id": 1792609211,
+    "id": 1792688411,
     "empresa_id": 1,
-    "fecha_prediccion": "2026-10-21T19:00:00",
-    "fecha_objetivo": "2026-10-22T19:00:00",
+    "fecha_prediccion": "2026-10-22T17:00:00",
+    "fecha_objetivo": "2026-10-23T17:00:00",
     "tipo": "produccion_solar",
     "valor": 72.0,
     "unidad": "kWh",
@@ -11,13 +11,13 @@
     "escenario": "demo",
     "origen_dato": "json_demo",
     "confiabilidad_datos": 55.0,
-    "created_at": "2026-10-21T19:00:00"
+    "created_at": "2026-10-22T17:00:00"
   },
   {
-    "id": 1792609212,
+    "id": 1792688412,
     "empresa_id": 1,
-    "fecha_prediccion": "2026-10-21T19:00:00",
-    "fecha_objetivo": "2026-10-22T19:00:00",
+    "fecha_prediccion": "2026-10-22T17:00:00",
+    "fecha_objetivo": "2026-10-23T17:00:00",
     "tipo": "consumo",
     "valor": 391.38,
     "unidad": "kWh",
@@ -25,13 +25,13 @@
     "escenario": "demo",
     "origen_dato": "json_demo",
     "confiabilidad_datos": 55.0,
-    "created_at": "2026-10-21T19:00:00"
+    "created_at": "2026-10-22T17:00:00"
   },
   {
-    "id": 1792609213,
+    "id": 1792688413,
     "empresa_id": 1,
-    "fecha_prediccion": "2026-10-21T19:00:00",
-    "fecha_objetivo": "2026-10-22T19:00:00",
+    "fecha_prediccion": "2026-10-22T17:00:00",
+    "fecha_objetivo": "2026-10-23T17:00:00",
     "tipo": "costo",
     "valor": 301175.0,
     "unidad": "COP",
@@ -39,97 +39,13 @@
     "escenario": "demo",
     "origen_dato": "json_demo",
     "confiabilidad_datos": 55.0,
-    "created_at": "2026-10-21T19:00:00"
+    "created_at": "2026-10-22T17:00:00"
   },
   {
-    "id": 1792609221,
+    "id": 1792689399,
     "empresa_id": 1,
-    "fecha_prediccion": "2026-10-21T19:00:00",
-    "fecha_objetivo": "2026-10-23T19:00:00",
-    "tipo": "produccion_solar",
-    "valor": 68.5,
-    "unidad": "kWh",
-    "confianza_pct": 76.0,
-    "escenario": "demo",
-    "origen_dato": "json_demo",
-    "confiabilidad_datos": 55.0,
-    "created_at": "2026-10-21T19:00:00"
-  },
-  {
-    "id": 1792609222,
-    "empresa_id": 1,
-    "fecha_prediccion": "2026-10-21T19:00:00",
-    "fecha_objetivo": "2026-10-23T19:00:00",
-    "tipo": "consumo",
-    "valor": 395.3,
-    "unidad": "kWh",
-    "confianza_pct": 70.0,
-    "escenario": "demo",
-    "origen_dato": "json_demo",
-    "confiabilidad_datos": 55.0,
-    "created_at": "2026-10-21T19:00:00"
-  },
-  {
-    "id": 1792609223,
-    "empresa_id": 1,
-    "fecha_prediccion": "2026-10-21T19:00:00",
-    "fecha_objetivo": "2026-10-23T19:00:00",
-    "tipo": "costo",
-    "valor": 308172.0,
-    "unidad": "COP",
-    "confianza_pct": 70.0,
-    "escenario": "demo",
-    "origen_dato": "json_demo",
-    "confiabilidad_datos": 55.0,
-    "created_at": "2026-10-21T19:00:00"
-  },
-  {
-    "id": 1792609231,
-    "empresa_id": 1,
-    "fecha_prediccion": "2026-10-21T19:00:00",
-    "fecha_objetivo": "2026-10-24T19:00:00",
-    "tipo": "produccion_solar",
-    "valor": 65.0,
-    "unidad": "kWh",
-    "confianza_pct": 76.0,
-    "escenario": "demo",
-    "origen_dato": "json_demo",
-    "confiabilidad_datos": 55.0,
-    "created_at": "2026-10-21T19:00:00"
-  },
-  {
-    "id": 1792609232,
-    "empresa_id": 1,
-    "fecha_prediccion": "2026-10-21T19:00:00",
-    "fecha_objetivo": "2026-10-24T19:00:00",
-    "tipo": "consumo",
-    "valor": 387.47,
-    "unidad": "kWh",
-    "confianza_pct": 70.0,
-    "escenario": "demo",
-    "origen_dato": "json_demo",
-    "confiabilidad_datos": 55.0,
-    "created_at": "2026-10-21T19:00:00"
-  },
-  {
-    "id": 1792609233,
-    "empresa_id": 1,
-    "fecha_prediccion": "2026-10-21T19:00:00",
-    "fecha_objetivo": "2026-10-24T19:00:00",
-    "tipo": "costo",
-    "valor": 304089.0,
-    "unidad": "COP",
-    "confianza_pct": 70.0,
-    "escenario": "demo",
-    "origen_dato": "json_demo",
-    "confiabilidad_datos": 55.0,
-    "created_at": "2026-10-21T19:00:00"
-  },
-  {
-    "id": 1792610199,
-    "empresa_id": 1,
-    "fecha_prediccion": "2026-10-21T19:00:00",
-    "fecha_objetivo": "2026-10-22T19:00:00",
+    "fecha_prediccion": "2026-10-22T17:00:00",
+    "fecha_objetivo": "2026-10-23T17:00:00",
     "tipo": "riesgo_apagon",
     "valor": 18.0,
     "unidad": "%",
@@ -137,6 +53,6 @@
     "escenario": "demo",
     "origen_dato": "json_demo",
     "confiabilidad_datos": 55.0,
-    "created_at": "2026-10-21T19:00:00"
+    "created_at": "2026-10-22T17:00:00"
   }
 ]
