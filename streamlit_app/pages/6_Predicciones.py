@@ -15,7 +15,7 @@ from ubicacion import CIUDAD
 from ui import render_user_sidebar
 
 
-st.set_page_config(page_title="Predicciones", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Predicciones", layout="wide", initial_sidebar_state="auto")
 render_user_sidebar()
 
 if not is_authenticated():

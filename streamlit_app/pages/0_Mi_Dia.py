@@ -11,7 +11,7 @@ from design import render_hero, render_section_header, render_tile
 from ui import NOMBRE_PAGINA, puede_ver, render_user_sidebar
 
 
-st.set_page_config(page_title="Mi Dia", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Mi Dia", layout="wide", initial_sidebar_state="auto")
 render_user_sidebar()
 
 if not is_authenticated():

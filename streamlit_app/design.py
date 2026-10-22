@@ -97,6 +97,19 @@ def _fijar_css_en_pagina(css: str) -> None:
         "if (!tag) { tag = doc.createElement('style'); tag.id = 'kai-estilos'; doc.head.appendChild(tag); }"
         f"const css = {json.dumps(css)};"
         "if (tag.textContent !== css) { tag.textContent = css; }"
+        # En celular el menú lateral tapa la pantalla: se cierra solo al cambiar de pantalla
+        "const win = window.parent;"
+        "const ruta = win.location.pathname;"
+        "if (win.__kaiRuta !== ruta) {"
+        "  win.__kaiRuta = ruta;"
+        "  if (win.innerWidth < 768) {"
+        "    setTimeout(() => {"
+        "      const abierto = doc.querySelector('[data-testid=\"stSidebar\"][aria-expanded=\"true\"]');"
+        "      const boton = doc.querySelector('[data-testid=\"stSidebarCollapseButton\"] button');"
+        "      if (abierto && boton) { boton.click(); }"
+        "    }, 350);"
+        "  }"
+        "}"
         "</script>",
         height=0,
     )
@@ -390,7 +403,8 @@ def inject_css() -> None:
     transform: scale(0.985);
     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
 }}
-.ag-hero:hover .ag-hero__panel {{
+.ag-hero:hover .ag-hero__panel,
+.ag-hero:focus-within .ag-hero__panel {{
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -1066,19 +1080,6 @@ div[role="dialog"]:has(.ag-dialogo-borrar) .stButton button[kind="primary"]:hove
 [data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"] summary:hover [data-testid="stExpanderToggleIcon"] {{
     border-color: var(--cat-borde);
 }}
-[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpanderIcon"] {{
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    margin-right: 0.55rem;
-    border-radius: 8px;
-    border: 1px solid var(--cat-borde);
-    background: var(--cat-fondo);
-    color: var(--cat-color);
-    font-size: 1.15rem;
-}}
 [data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stExpander"] summary strong {{
     font-size: 0.95rem;
     font-weight: 700;
@@ -1149,6 +1150,155 @@ div[role="dialog"]:has(.ag-dialogo-borrar) .stButton button[kind="primary"]:hove
 }}
 [data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stCheckbox"] [data-testid="stTooltipIcon"] {{
     color: var(--muted);
+}}
+
+/* ---------- Responsive: tablets y celulares ---------- */
+/* El área de contenido es un "contenedor": las filas se reacomodan según el espacio real
+   (con o sin menú lateral abierto), no solo según el ancho de la pantalla. */
+[data-testid="stAppViewBlockContainer"] {{
+    container-type: inline-size;
+    container-name: kai-main;
+}}
+/* En pantallas táctiles el resumen del hero se abre con un toque */
+.ag-hero[tabindex]:focus {{
+    outline: none;
+}}
+@media (hover: none) {{
+    .ag-hero[tabindex] {{
+        cursor: pointer;
+    }}
+}}
+/* Filas de 3 o más tarjetas: dos por línea cuando el espacio es mediano, una cuando es angosto */
+@container kai-main (max-width: 760px) {{
+    [data-testid="stHorizontalBlock"]:has(> [data-testid="column"]:nth-child(3)):not(:has(.ag-edit-td)):not(:has(.ag-edit-th)):not([data-testid="column"] [data-testid="stHorizontalBlock"]) {{
+        flex-wrap: wrap;
+        row-gap: 1rem;
+    }}
+    [data-testid="stHorizontalBlock"]:has(> [data-testid="column"]:nth-child(3)):not(:has(.ag-edit-td)):not(:has(.ag-edit-th)):not([data-testid="column"] [data-testid="stHorizontalBlock"]) > [data-testid="column"] {{
+        flex: 1 1 calc(50% - 1rem) !important;
+        min-width: calc(50% - 1rem) !important;
+    }}
+    /* Tabla para editar aparatos: cada aparato como una tarjeta con sus etiquetas */
+    [data-testid="stHorizontalBlock"]:has(.ag-edit-th) {{
+        display: none;
+    }}
+    [data-testid="stHorizontalBlock"]:has(.ag-edit-td) {{
+        flex-wrap: wrap;
+        gap: 0.6rem 0.9rem;
+        padding: 0.85rem 1rem;
+    }}
+    [data-testid="stHorizontalBlock"]:has(.ag-edit-td) > [data-testid="column"] {{
+        flex: 1 1 calc(33% - 0.9rem) !important;
+        min-width: calc(33% - 0.9rem) !important;
+        width: auto !important;
+    }}
+    [data-testid="stHorizontalBlock"]:has(.ag-edit-td) > [data-testid="column"]:first-child,
+    [data-testid="stHorizontalBlock"]:has(.ag-edit-td) > [data-testid="column"]:last-child {{
+        flex-basis: 100% !important;
+        min-width: 100% !important;
+    }}
+    .ag-edit-td {{
+        text-align: left !important;
+    }}
+    .ag-edit-td--nombre {{
+        font-weight: 700;
+    }}
+    .ag-edit-td[data-label]::before {{
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 0.2rem;
+        font-family: "Source Sans Pro", sans-serif;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--accent);
+    }}
+    [data-testid="stHorizontalBlock"]:has(.ag-edit-td) [data-testid="stHorizontalBlock"] {{
+        flex-wrap: nowrap;
+        gap: 0.6rem;
+    }}
+    [data-testid="stHorizontalBlock"]:has(.ag-edit-td) [data-testid="stHorizontalBlock"] > [data-testid="column"] {{
+        flex: 0 0 auto !important;
+        min-width: 0 !important;
+        width: auto !important;
+    }}
+    [data-testid="stHorizontalBlock"]:has(.ag-edit-td) .stButton {{
+        justify-content: flex-start;
+    }}
+    .ag-edit-pie,
+    .ag-tabla__pie {{
+        flex-direction: column;
+        align-items: flex-start;
+    }}
+}}
+@container kai-main (max-width: 520px) {{
+    [data-testid="stHorizontalBlock"]:has(> [data-testid="column"]:nth-child(3)):not(:has(.ag-edit-td)):not(:has(.ag-edit-th)):not([data-testid="column"] [data-testid="stHorizontalBlock"]) > [data-testid="column"] {{
+        flex-basis: 100% !important;
+        min-width: 100% !important;
+    }}
+}}
+@media (max-width: 1024px) {{
+    [data-testid="stAppViewBlockContainer"] {{
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }}
+    .ag-hero__title {{
+        font-size: 1.8rem;
+    }}
+}}
+@media (max-width: 640px) {{
+    [data-testid="stAppViewBlockContainer"] {{
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }}
+    .ag-hero {{
+        padding: 1.1rem;
+        border-radius: 18px;
+    }}
+    .ag-hero--solido {{
+        padding: 1.4rem 1.1rem 1.5rem;
+    }}
+    .ag-hero__title,
+    .ag-hero--solido .ag-hero__title {{
+        font-size: 1.45rem;
+    }}
+    .ag-hero__subtitle {{
+        font-size: 0.93rem;
+    }}
+    /* En celular el resumen completo no cabe en el recuadro: se desliza con el dedo */
+    .ag-hero__panel {{
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
+    }}
+    .ag-hero__panel::-webkit-scrollbar {{
+        display: block;
+        width: 4px;
+    }}
+    .ag-hero__panel::-webkit-scrollbar-thumb {{
+        background: var(--border);
+        border-radius: 4px;
+    }}
+    .ag-hero__panel-body {{
+        font-size: 0.88rem;
+        text-align: left;
+    }}
+    .ag-section-head h3 {{
+        font-size: 1rem;
+    }}
+    .ag-card {{
+        padding: 0.9rem;
+    }}
+    .ag-card__body[data-tooltip]:hover::after {{
+        width: min(260px, calc(100vw - 4rem));
+    }}
+    [data-testid="stMetricValue"] {{
+        font-size: 1.25rem;
+    }}
+    .ag-welcome,
+    .ag-note {{
+        padding: 1rem 1.1rem;
+    }}
 }}
 
 /* ---------- Cambio de pantalla suave ---------- */
@@ -1270,6 +1420,8 @@ def render_hero(
     hero_class = "ag-hero ag-hero--solido" if solido else "ag-hero"
 
     expand_html = ""
+    # Con resumen flotante el hero acepta foco: en celular se abre con un toque
+    tabindex = ' tabindex="0"' if expandable_text else ""
     if expandable_text:
         expand_html = f"""
             <div class="ag-hero__panel" role="tooltip" aria-label="{escape(expandable_title)}">
@@ -1283,7 +1435,7 @@ def render_hero(
 
     render_html_block(
         f"""
-        <div class="{hero_class}" style="--tone-start: {tone_start}; --tone-end: {tone_end};">
+        <div class="{hero_class}"{tabindex} style="--tone-start: {tone_start}; --tone-end: {tone_end};">
             <div class="ag-hero__eyebrow">
                 <span class="ag-icon">{icon_svg(icon, 18, "#FFFFFF")}</span>
                 <span>{escape(eyebrow)}</span>

@@ -22,7 +22,7 @@ from design import PALETTE, render_card, render_hero, render_html_block, render_
 from inventario import coincide, payload_edicion
 from ui import render_user_sidebar
 
-st.set_page_config(page_title="Mis aparatos", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Mis aparatos", layout="wide", initial_sidebar_state="auto")
 render_user_sidebar()
 
 if not is_authenticated():
@@ -395,13 +395,13 @@ if aparatos:
             propio = a["origen_dato"] == "usuario"
             celdas = (
                 f'<div class="ag-edit-td ag-edit-td--nombre">{escape(a["nombre"])}</div>',
-                f'<div class="ag-edit-td ag-edit-td--centro"><span class="ag-edit-chip">{a["cantidad"]}</span></div>',
-                f'<div class="ag-edit-td ag-edit-td--derecha ag-edit-num">{a["potencia_efectiva_w"]:,.0f} <small>W</small></div>',
-                f'<div class="ag-edit-td ag-edit-td--centro ag-edit-num">{a["horas_efectivas_dia"]:g} <small>h</small></div>',
-                '<div class="ag-edit-td ag-edit-td--centro">'
+                f'<div class="ag-edit-td ag-edit-td--centro" data-label="Cantidad"><span class="ag-edit-chip">{a["cantidad"]}</span></div>',
+                f'<div class="ag-edit-td ag-edit-td--derecha ag-edit-num" data-label="Potencia">{a["potencia_efectiva_w"]:,.0f} <small>W</small></div>',
+                f'<div class="ag-edit-td ag-edit-td--centro ag-edit-num" data-label="Horas al día">{a["horas_efectivas_dia"]:g} <small>h</small></div>',
+                '<div class="ag-edit-td ag-edit-td--centro" data-label="Dato">'
                 + ('<span class="ag-pill ag-pill--tuyo">Tuyo</span>' if propio else '<span class="ag-pill ag-pill--info">Típico</span>')
                 + "</div>",
-                f'<div class="ag-edit-td ag-edit-td--derecha ag-edit-num">{a["consumo_kwh_mes"]:,.1f}</div>',
+                f'<div class="ag-edit-td ag-edit-td--derecha ag-edit-num" data-label="kWh / mes">{a["consumo_kwh_mes"]:,.1f}</div>',
             )
             for col, celda in zip(fila[:-1], celdas):
                 with col:
@@ -432,19 +432,6 @@ if aparatos:
 # ---------------------------------------------------------------------------
 # Agregar aparatos
 # ---------------------------------------------------------------------------
-# Ícono (Material) de cada categoría en la lista para agregar
-ICONO_CATEGORIA = {
-    "refrigeracion": ":material/kitchen:",
-    "climatizacion": ":material/mode_fan:",
-    "iluminacion": ":material/lightbulb:",
-    "cocina": ":material/blender:",
-    "lavado": ":material/local_laundry_service:",
-    "entretenimiento": ":material/tv:",
-    "cuidado_personal": ":material/spa:",
-    "oficina": ":material/computer:",
-    "bombas_motores": ":material/build:",
-}
-
 with st.container(border=True):
     render_section_header("Agregar aparatos", "upload", "Busca por nombre, con o sin tildes, y marca uno o varios.")
     catalogo = get_catalogo_aparatos(tipo_entidad) or []
@@ -481,7 +468,7 @@ with st.container(border=True):
                 del_tipo = [a for a in filtrados if a["tipo_aparato"] == tipo]
                 marcados = sum(1 for a in del_tipo if a["id"] in seleccion)
                 etiqueta = f"**{TIPOS_APARATO.get(tipo, tipo.title())}** :gray-background[{len(del_tipo)} disponibles]"
-                with st.expander(etiqueta, expanded=bool(busqueda) or marcados > 0, icon=ICONO_CATEGORIA.get(tipo, ":material/category:")):
+                with st.expander(etiqueta, expanded=bool(busqueda) or marcados > 0):
                     render_html_block(f'<span class="ag-cat ag-cat--{tipo}"></span>')
                     for a in del_tipo:
                         st.checkbox(

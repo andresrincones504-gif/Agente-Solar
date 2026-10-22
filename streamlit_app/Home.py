@@ -279,7 +279,7 @@ def render_login() -> None:
                 st.warning("Completa ambos campos.")
 
 
-st.set_page_config(page_title="Ka’i", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="Ka’i", layout="wide", initial_sidebar_state="auto")
 inject_css()
 
 if not is_authenticated():
