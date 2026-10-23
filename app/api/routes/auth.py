@@ -9,7 +9,7 @@ from app.api.deps.auth import get_current_user, get_optional_user
 from app.core.config import get_settings
 from app.core.security import create_access_token, get_password_hash, verify_password
 from app.db.session import get_db
-from app.models.models import User, Empresa, ConfiguracionAlerta, TipoEntidad, UserRole
+from app.models.models import User, Empresa, ConfiguracionAlerta, InstalacionSolar, TipoEntidad, UserRole
 from app.schemas.schemas import MessageResponse, Token, UserCreate, UserLogin, UserResponse
 from app.services.aparatos import crear_aparatos
 
@@ -85,6 +85,8 @@ def register(
                 tipo=tipo_emp,
                 tipo_entidad=tipo_entidad,
                 tarifa_kwh=tarifa,
+                capacidad_paneles_kw=user_data.capacidad_paneles_kw or 0.0,
+                capacidad_bateria_kwh=user_data.capacidad_bateria_kwh or 0.0,
                 escenario_default=user_data.escenario_usuario,
             )
             db.add(nueva_empresa)
@@ -92,6 +94,12 @@ def register(
             empresa_id = nueva_empresa.id
 
             db.add(ConfiguracionAlerta(empresa_id=empresa_id))
+            if user_data.instalacion:
+                # Paneles y batería reales: los cálculos dejan de simular el sistema
+                instalacion = InstalacionSolar(empresa_id=empresa_id, **user_data.instalacion.model_dump())
+                db.add(instalacion)
+                nueva_empresa.capacidad_paneles_kw = instalacion.potencia_pico_kw
+                nueva_empresa.capacidad_bateria_kwh = instalacion.bateria_kwh
             if user_data.aparatos:
                 crear_aparatos(db, empresa_id, user_data.aparatos)
 

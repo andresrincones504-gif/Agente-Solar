@@ -65,6 +65,11 @@ ICON_PATHS = {
     "person": "M12 12a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0",
     "lock": "M7 11V8a5 5 0 0110 0v3m-9 0h8a1 1 0 011 1v7H7v-7a1 1 0 011-1z",
     "report": "M7 3h7l5 5v13H7zM14 3v5h5M10 13h4m-4 4h4M10 9h1",
+    "building": "M4 21V5a1 1 0 011-1h9a1 1 0 011 1v16m0-11h4a1 1 0 011 1v10M3 21h18M8 8h3m-3 4h3m-3 4h3",
+    "info": "M12 21a9 9 0 100-18 9 9 0 000 18zm0-5v-4m0-4h.01",
+    "panel": "M3 20h18M5 16l2-10h10l2 10H5zm4-10l-1 10m7-10l1 10M6 11h12",
+    "home": "M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1v-9z",
+    "shield": "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zm-3 9l2 2 4-4",
 }
 
 
@@ -1149,6 +1154,685 @@ div[role="dialog"]:has(.ag-dialogo-borrar) .stButton button[kind="primary"]:hove
 }}
 [data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-add-caption) [data-testid="stCheckbox"] [data-testid="stTooltipIcon"] {{
     color: var(--muted);
+}}
+
+/* ---------- Registro de cuentas (Administración): tres pasos en tarjetas ---------- */
+.ag-reg-progreso {{
+    height: 3px;
+    margin: 0.25rem 0 0.9rem;
+    border-radius: 999px;
+    background: rgba(154, 176, 187, 0.15);
+    overflow: hidden;
+}}
+.ag-reg-progreso span {{
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #1FB87F, #2DD196);
+    transition: width 0.3s ease;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) {{
+    container-type: inline-size;
+    container-name: kai-reg;
+    background: linear-gradient(180deg, rgba(16, 31, 41, 0.96), rgba(12, 24, 33, 0.96)) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 18px !important;
+    padding: 1.6rem 1.75rem 1.5rem !important;
+}}
+.ag-reg-head {{
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    margin-bottom: 0.35rem;
+}}
+.ag-reg-head__icono {{
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: rgba(57, 185, 130, 0.12);
+    border: 1px solid rgba(57, 185, 130, 0.35);
+}}
+.ag-reg-head__icono img {{
+    display: block;
+}}
+.ag-reg-head__titulo {{
+    font-size: 1.2rem;
+    font-weight: 800;
+    line-height: 1.25;
+    color: var(--text);
+}}
+.ag-reg-head__sub {{
+    margin-top: 0.15rem;
+    font-size: 0.86rem;
+    color: var(--muted);
+}}
+.ag-reg-separador {{
+    margin: 0.6rem 0 0.4rem;
+    border-top: 1px solid var(--border);
+}}
+.ag-reg-nota {{
+    margin: 0 0 0.3rem 3.3rem;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    color: var(--muted);
+}}
+.ag-reg-elegidos {{
+    font-size: 0.86rem;
+    color: var(--muted);
+}}
+.ag-reg-elegidos b {{
+    color: var(--text);
+}}
+.ag-reg-paneles {{
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid rgba(216, 162, 74, 0.35);
+    border-radius: 10px;
+    background: rgba(216, 162, 74, 0.08);
+    font-size: 0.86rem;
+    line-height: 1.45;
+    color: var(--text);
+}}
+.ag-reg-paneles img {{
+    flex: 0 0 auto;
+    margin-top: 0.1rem;
+}}
+/* Tipo de entidad: tarjetas 3 x 2 con el círculo de selección a la derecha */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] [role="radiogroup"] {{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    width: 100%;
+    align-items: stretch;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] label[data-baseweb="radio"] {{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.6rem;
+    align-self: stretch;
+    height: auto !important;
+    min-height: 4.5rem;
+    margin: 0;
+    padding: 0.8rem 0.85rem;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: rgba(9, 19, 26, 0.55);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] label[data-baseweb="radio"]:hover {{
+    border-color: rgba(57, 185, 130, 0.45);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked) {{
+    border-color: var(--success);
+    background: linear-gradient(150deg, rgba(57, 185, 130, 0.16), rgba(57, 185, 130, 0.03) 70%), rgba(9, 19, 26, 0.55);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] label[data-baseweb="radio"] > div:last-child {{
+    min-width: 0;
+    padding-left: 0;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] label[data-baseweb="radio"] [data-testid="stMarkdownContainer"] p {{
+    font-size: 0.84rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] label[data-baseweb="radio"] [data-testid="stCaptionContainer"] p {{
+    font-size: 0.72rem;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] label[data-baseweb="radio"] > div:first-child {{
+    flex: 0 0 auto;
+    width: 16px !important;
+    height: 16px !important;
+    margin: 0.15rem 0 0 0 !important;
+    background: transparent !important;
+    border: 2px solid rgba(154, 176, 187, 0.5) !important;
+    box-shadow: none !important;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] label[data-baseweb="radio"] > div:first-child > div {{
+    width: 8px !important;
+    height: 8px !important;
+    background: transparent !important;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked) > div:first-child {{
+    border-color: var(--success) !important;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked) > div:first-child > div {{
+    background: var(--success) !important;
+}}
+/* Campos de un solo color, sin la franja oscura junto al ojo de la contraseña */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) [data-baseweb="input"] {{
+    background: #0C1820 !important;
+    border-color: #22394A !important;
+    border-radius: 8px !important;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) [data-baseweb="input"] > div,
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) [data-baseweb="input"] input {{
+    background: transparent !important;
+}}
+/* Buscador con lupa y etiqueta en mayúsculas */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) [data-testid="stTextInput"]:has(input[aria-label="Buscar aparato"]) [data-testid="stWidgetLabel"] p {{
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) input[aria-label="Buscar aparato"] {{
+    padding-left: 2.4rem !important;
+    background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%239AB0BB%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%3E%3Ccircle%20cx%3D%2211%22%20cy%3D%2211%22%20r%3D%227%22/%3E%3Cpath%20d%3D%22M20%2020l-3.5-3.5%22/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: 0.85rem center !important;
+    background-size: 16px 16px !important;
+}}
+/* Botones: principal verde brillante; "Tengo paneles solares" con borde verde */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) .stButton > button {{
+    min-height: 2.9rem;
+    line-height: 1.2;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) .stButton > button p {{
+    font-size: 0.88rem;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) .stButton > button[kind="primary"] {{
+    background: linear-gradient(90deg, #1FB87F, #2DD196);
+    color: #05261A;
+    border: none;
+    box-shadow: 0 10px 26px -14px rgba(45, 209, 150, 0.8);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) .stButton > button[kind="primary"]:hover {{
+    filter: brightness(1.06);
+    color: #05261A;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) .stButton > button[kind="primary"] p {{
+    color: #05261A;
+    font-weight: 700;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stHorizontalBlock"]:has(button[kind="primary"]) .stButton > button[kind="secondary"] {{
+    border-color: rgba(57, 185, 130, 0.55);
+    background: rgba(57, 185, 130, 0.06);
+}}
+/* Paso 3: cada aparato en su tarjeta y los totales abajo */
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="column"] .ag-reg-aparato):not(:has([data-testid="stVerticalBlockBorderWrapper"] [data-testid="column"] .ag-reg-aparato)) {{
+    background: rgba(9, 19, 26, 0.45) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 12px !important;
+    padding: 1rem 1.15rem 0.6rem !important;
+}}
+.ag-reg-aparato__nombre {{
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--text);
+}}
+.ag-reg-aparato__tipico {{
+    margin-top: 0.15rem;
+    font-size: 0.82rem;
+    color: var(--muted);
+}}
+.ag-reg-total {{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    margin-top: 0.6rem;
+}}
+.ag-reg-total__label {{
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.84rem;
+    color: var(--muted);
+}}
+.ag-reg-total__valor {{
+    margin-top: 0.2rem;
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+}}
+.ag-reg-total__valor span {{
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--muted);
+}}
+.ag-reg-total__costo {{
+    text-align: right;
+}}
+.ag-reg-total__costo .ag-reg-total__label {{
+    justify-content: flex-end;
+}}
+.ag-reg-total__info {{
+    display: inline-flex;
+    cursor: help;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has([data-testid="column"] .ag-reg-aparato):not(:has([data-testid="stVerticalBlockBorderWrapper"] [data-testid="column"] .ag-reg-aparato)) .stButton > button {{
+    white-space: nowrap;
+    min-height: 2.4rem;
+    padding: 0 0.9rem;
+}}
+/* ---------- Registro: pantalla "Tengo paneles solares" ---------- */
+.ag-reg-head__texto {{
+    flex: 1 1 auto;
+    min-width: 0;
+}}
+.ag-reg-head__eyebrow {{
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #5FB6E8;
+}}
+.ag-reg-head__pill {{
+    flex: 0 0 auto;
+    align-self: flex-start;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid rgba(57, 185, 130, 0.45);
+    border-radius: 999px;
+    background: rgba(57, 185, 130, 0.10);
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--success);
+    white-space: nowrap;
+}}
+.ag-inst-label {{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.75rem;
+    font-size: 0.875rem;
+    color: var(--text);
+}}
+.ag-inst-recomendado {{
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--success);
+}}
+.ag-inst-pill {{
+    padding: 0.1rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--muted);
+}}
+.ag-inst-pill--ok {{
+    border-color: rgba(57, 185, 130, 0.5);
+    background: rgba(57, 185, 130, 0.12);
+    color: var(--success);
+}}
+.ag-inst-pill--info {{
+    border-color: rgba(95, 182, 232, 0.5);
+    background: rgba(95, 182, 232, 0.12);
+    color: #5FB6E8;
+}}
+.ag-inst-marcas {{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin: -0.85rem 0 0.25rem;
+}}
+.ag-inst-marcas span {{
+    flex: 0 1 auto;
+    max-width: 34%;
+    font-size: 0.68rem;
+    line-height: 1.25;
+    color: var(--muted);
+}}
+.ag-inst-marcas span:nth-child(2) {{
+    text-align: center;
+}}
+.ag-inst-marcas span:last-child {{
+    text-align: right;
+}}
+/* Deslizadores: sin los números de Streamlit (los rótulos van debajo); verde la inclinación, azul el SOC */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stSliderTickBar"],
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stSliderThumbValue"] {{
+    display: none;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stSlider"] [data-baseweb="slider"] {{
+    filter: hue-rotate(155deg) brightness(1.12);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst):has(.ag-reg-head--bateria) [data-testid="stSlider"] [data-baseweb="slider"] {{
+    filter: hue-rotate(205deg) brightness(1.15);
+}}
+/* Tarjetas de cálculo: potencia pico (dorada) y capacidad de la batería (azul) */
+.ag-inst-calculo {{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: 12px;
+}}
+.ag-inst-calculo--solar {{
+    border: 1px solid rgba(216, 162, 74, 0.45);
+    background: rgba(216, 162, 74, 0.08);
+}}
+.ag-inst-calculo--bateria {{
+    border: 1px solid rgba(76, 152, 211, 0.45);
+    background: rgba(76, 152, 211, 0.08);
+}}
+.ag-inst-calculo__dato {{
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}}
+.ag-inst-calculo__icono {{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(9, 19, 26, 0.6);
+    border: 1px solid var(--border);
+}}
+.ag-inst-calculo__icono img {{
+    display: block;
+}}
+.ag-inst-calculo__titulo {{
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}}
+.ag-inst-calculo--solar .ag-inst-calculo__titulo,
+.ag-inst-calculo--solar .ag-inst-calculo__valor {{
+    color: #E3B866;
+}}
+.ag-inst-calculo--bateria .ag-inst-calculo__titulo,
+.ag-inst-calculo--bateria .ag-inst-calculo__valor {{
+    color: #7DB6E3;
+}}
+.ag-inst-calculo__valor {{
+    font-size: 1.7rem;
+    font-weight: 800;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}}
+.ag-inst-calculo__valor span {{
+    font-size: 0.95rem;
+    font-weight: 600;
+}}
+.ag-inst-calculo__detalle {{
+    flex: 1 1 14rem;
+    max-width: 24rem;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: var(--muted);
+    text-align: right;
+}}
+.ag-inst-calculo__detalle b {{
+    color: var(--text);
+}}
+/* Orientación y voltaje: botones del mismo ancho; el elegido en verde */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stRadio"] [role="radiogroup"] {{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(4rem, 1fr));
+    gap: 0.5rem;
+    width: 100%;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stRadio"] label[data-baseweb="radio"] {{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.05rem;
+    margin: 0;
+    padding: 0.5rem 0.35rem;
+    min-height: 2.9rem;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(9, 19, 26, 0.55);
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stRadio"] label[data-baseweb="radio"] > div:first-child {{
+    display: none;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stRadio"] label[data-baseweb="radio"] > div:last-child {{
+    padding-left: 0;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stRadio"] label[data-baseweb="radio"] [data-testid="stMarkdownContainer"] p {{
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--muted);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stRadio"] label[data-baseweb="radio"] [data-testid="stCaptionContainer"] p {{
+    font-size: 0.7rem;
+    line-height: 1.25;
+    color: var(--muted);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stRadio"] label[data-baseweb="radio"]:hover {{
+    border-color: rgba(57, 185, 130, 0.45);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked) {{
+    border-color: var(--success);
+    background: rgba(57, 185, 130, 0.10);
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stRadio"] label[data-baseweb="radio"]:has(input:checked) p {{
+    color: var(--success) !important;
+}}
+/* Voltaje del banco: 4 botones en fila, o 2 × 2 cuando la tarjeta es angosta */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst):has(.ag-reg-head--bateria) [data-testid="stRadio"] [role="radiogroup"] {{
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}}
+@container kai-reg (max-width: 620px) {{
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst):has(.ag-reg-head--bateria) [data-testid="stRadio"] [role="radiogroup"] {{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }}
+}}
+/* Unidad dentro del campo (el texto lo pone registro.py) y nota a la derecha de la etiqueta */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stNumberInputContainer"]::after {{
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.75rem;
+    font-size: 0.76rem;
+    color: var(--muted);
+    white-space: nowrap;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stNumberInput"] [data-testid="stWidgetLabel"] {{
+    display: flex;
+    width: 100%;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stNumberInput"] [data-testid="stWidgetLabel"]::after {{
+    margin-left: auto;
+    padding-left: 0.5rem;
+    font-size: 0.7rem;
+    color: var(--muted);
+    white-space: nowrap;
+}}
+/* Cantidad de paneles: − valor + */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stNumberInput"]:has(input[aria-label="Cantidad de paneles instalados"]) input {{
+    text-align: center;
+    font-size: 1.05rem;
+    font-weight: 700;
+}}
+/* Cantidad de paneles: botones a los lados del número */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stNumberInput"]:has(input[aria-label="Cantidad de paneles instalados"]) [data-testid="stNumberInputContainer"] > div:last-child {{
+    display: contents;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stNumberInput"]:has(input[aria-label="Cantidad de paneles instalados"]) [data-testid="stNumberInputContainer"] > div:first-child {{
+    order: 0;
+    flex: 1 1 auto;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stNumberInput"]:has(input[aria-label="Cantidad de paneles instalados"]) [data-testid="stNumberInputStepDown"] {{
+    order: -1;
+    border-right: 1px solid var(--border) !important;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stNumberInput"]:has(input[aria-label="Cantidad de paneles instalados"]) [data-testid="stNumberInputStepUp"] {{
+    order: 1;
+    border-left: 1px solid var(--border) !important;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stNumberInput"]:has(input[aria-label="Cantidad de paneles instalados"]) [data-testid="stNumberInputStepDown"],
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stNumberInput"]:has(input[aria-label="Cantidad de paneles instalados"]) [data-testid="stNumberInputStepUp"] {{
+    width: 2.75rem;
+    color: var(--text);
+}}
+/* Interruptor en verde cuando está activo */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stCheckbox"] label[data-baseweb="checkbox"]:has(input:checked) > div:first-child {{
+    background-color: var(--success) !important;
+}}
+/* Interruptor "¿Tiene batería?" y enlace "¿Cómo leer tu factura?" arriba a la derecha de su sección */
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst):has(.ag-reg-head--bateria),
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst):has(.ag-reg-head--consumo) {{
+    position: relative;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst):has(.ag-reg-head--bateria) [data-testid="element-container"]:has(> [data-testid="stCheckbox"]),
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst):has(.ag-reg-head--consumo) [data-testid="element-container"]:has([data-testid="stPopover"]) {{
+    position: absolute;
+    top: 1.7rem;
+    right: 1.75rem;
+    width: auto !important;
+    z-index: 2;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst):has(.ag-reg-head--bateria) [data-testid="stCheckbox"] label {{
+    flex-direction: row-reverse;
+    gap: 0.6rem;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst):has(.ag-reg-head--consumo) [data-testid="stPopover"] button {{
+    min-height: 0;
+    padding: 0.2rem 0.5rem;
+    border: none !important;
+    background: transparent !important;
+    color: #5FB6E8 !important;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst):has(.ag-reg-head--consumo) [data-testid="stPopover"] button p {{
+    font-size: 0.78rem;
+    color: #5FB6E8;
+}}
+/* Pie con la referencia y los botones Cancelar / Guardar instalación */
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-inst-pie) {{
+    background: linear-gradient(180deg, rgba(16, 31, 41, 0.96), rgba(12, 24, 33, 0.96)) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
+    padding: 0.9rem 1.2rem !important;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-inst-pie) [data-testid="element-container"]:has(.ag-inst-pie) {{
+    display: none;
+}}
+.ag-inst-pie__nota {{
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.76rem;
+    line-height: 1.4;
+    color: var(--muted);
+}}
+.ag-inst-pie__nota img {{
+    flex: 0 0 auto;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-inst-pie) .stButton > button[kind="primary"] {{
+    background: linear-gradient(90deg, #1FB87F, #2DD196);
+    color: #05261A;
+    border: none;
+}}
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-inst-pie) .stButton > button[kind="primary"] p {{
+    color: #05261A;
+    font-weight: 700;
+}}
+@container kai-reg (max-width: 520px) {{
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst):has(.ag-reg-head--bateria) [data-testid="element-container"]:has(> [data-testid="stCheckbox"]),
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst):has(.ag-reg-head--consumo) [data-testid="element-container"]:has([data-testid="stPopover"]) {{
+        position: static;
+    }}
+    .ag-inst-calculo__detalle {{
+        text-align: left;
+        max-width: none;
+    }}
+}}
+
+/* Tarjetas angostas (celular): los campos en dos columnas pasan a una */
+@container kai-reg (max-width: 440px) {{
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stHorizontalBlock"] {{
+        flex-wrap: wrap;
+        row-gap: 0.5rem;
+    }}
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--inst) [data-testid="stHorizontalBlock"] > [data-testid="column"] {{
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
+    }}
+}}
+/* Pie angosto: la nota arriba y los botones en una fila debajo */
+[data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-inst-pie) {{
+    container-type: inline-size;
+    container-name: kai-pie;
+}}
+@container kai-pie (max-width: 600px) {{
+    [data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-inst-pie) [data-testid="stHorizontalBlock"] {{
+        flex-wrap: wrap;
+        row-gap: 0.6rem;
+    }}
+    [data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-inst-pie) [data-testid="stHorizontalBlock"] > [data-testid="column"]:first-child {{
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
+    }}
+    [data-testid="stVerticalBlockBorderWrapper"]:has(> div > [data-testid="stVerticalBlock"] > [data-testid="element-container"] .ag-inst-pie) [data-testid="stHorizontalBlock"] > [data-testid="column"]:not(:first-child) {{
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+    }}
+}}
+
+/* Responsive del registro */
+@container kai-reg (max-width: 560px) {{
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) [data-testid="stHorizontalBlock"]:has(> [data-testid="column"]:nth-child(3)) {{
+        flex-wrap: wrap;
+        row-gap: 0.5rem;
+    }}
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) [data-testid="stHorizontalBlock"]:has(> [data-testid="column"]:nth-child(3)) > [data-testid="column"] {{
+        flex: 1 1 calc(50% - 1rem) !important;
+        min-width: calc(50% - 1rem) !important;
+    }}
+}}
+@container kai-reg (max-width: 380px) {{
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) [data-testid="stHorizontalBlock"]:has(> [data-testid="column"]:nth-child(3)) > [data-testid="column"] {{
+        flex-basis: 100% !important;
+        min-width: 100% !important;
+    }}
+}}
+@container kai-reg (max-width: 430px) {{
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] [role="radiogroup"] {{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }}
+}}
+@container kai-reg (max-width: 300px) {{
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)):has(.ag-reg-head--cuenta) [data-testid="stRadio"] [role="radiogroup"] {{
+        grid-template-columns: minmax(0, 1fr);
+    }}
+    .ag-reg-total__costo,
+    .ag-reg-total__costo .ag-reg-total__label {{
+        text-align: left;
+        justify-content: flex-start;
+    }}
+}}
+@media (max-width: 640px) {{
+    [data-testid="stVerticalBlockBorderWrapper"]:has(.ag-reg-head .ag-reg-head__titulo):not(:has([data-testid="stVerticalBlockBorderWrapper"] .ag-reg-head .ag-reg-head__titulo)) {{
+        padding: 1.1rem 1rem 1rem !important;
+    }}
+    .ag-reg-nota {{
+        margin-left: 0;
+    }}
+    .ag-reg-total__valor {{
+        font-size: 1.4rem;
+    }}
 }}
 
 /* ---------- Cambio de pantalla suave ---------- */

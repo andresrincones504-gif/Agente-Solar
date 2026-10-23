@@ -258,3 +258,53 @@ class AparatoUsuario(Base):
     @property
     def consumo_kwh_mes(self) -> float:
         return round(self.potencia_efectiva_w * self.horas_efectivas_dia * (self.cantidad or 1) * 30 / 1000, 2)
+
+
+class InstalacionSolar(Base):
+    """Datos técnicos del sistema solar de un hogar o empresa (pantalla "Tengo paneles solares" del registro).
+
+    De aquí salen capacidad_paneles_kw (W x cantidad) y capacidad_bateria_kwh (V x Ah) de la empresa,
+    que son los valores que usan hoy los cálculos de producción y ahorro.
+    """
+    __tablename__ = "instalaciones_solares"
+
+    id = Column(Integer, primary_key=True, index=True)
+    empresa_id = Column(Integer, ForeignKey("empresas.id"), nullable=False, unique=True, index=True)
+    # Paneles
+    potencia_panel_w = Column(Float, nullable=False)
+    cantidad_paneles = Column(Integer, nullable=False)
+    orientacion = Column(String(20), default="sur")  # sur, sureste, suroeste, este_oeste, personalizada
+    azimut_grados = Column(Float, nullable=True)  # 180 = sur
+    inclinacion_grados = Column(Float, nullable=True)
+    tipo_panel = Column(String(60), nullable=True)
+    # Batería
+    tiene_bateria = Column(Boolean, default=False, nullable=False)
+    quimica_bateria = Column(String(60), nullable=True)
+    voltaje_banco_v = Column(Float, nullable=True)
+    capacidad_ah = Column(Float, nullable=True)
+    soc_pct = Column(Float, nullable=True)
+    dod_pct = Column(Float, nullable=True)
+    eficiencia_ciclo_pct = Column(Float, nullable=True)
+    potencia_descarga_w = Column(Float, nullable=True)
+    # Inversor
+    potencia_inversor_w = Column(Float, nullable=True)
+    eficiencia_inversor_pct = Column(Float, nullable=True)
+    rendimiento_pr_pct = Column(Float, nullable=True)
+    potencia_pv_max_w = Column(Float, nullable=True)
+    # Perfil de consumo
+    consumo_diario_kwh = Column(Float, nullable=True)
+    demanda_diurna_kwh = Column(Float, nullable=True)
+    demanda_nocturna_kwh = Column(Float, nullable=True)
+    carga_base_w = Column(Float, nullable=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+    @property
+    def potencia_pico_kw(self) -> float:
+        return round((self.potencia_panel_w or 0) * (self.cantidad_paneles or 0) / 1000, 3)
+
+    @property
+    def bateria_kwh(self) -> float:
+        if not self.tiene_bateria or not self.voltaje_banco_v or not self.capacidad_ah:
+            return 0.0
+        return round(self.voltaje_banco_v * self.capacidad_ah / 1000, 3)

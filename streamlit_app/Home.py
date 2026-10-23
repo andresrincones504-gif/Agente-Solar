@@ -143,18 +143,18 @@ LOGIN_CSS = """
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.6rem;
     /* Ajuste óptico: los rayos del sol pesan poco a la vista, así que el conjunto se corre un poco a la izquierda */
-    transform: translateX(-0.3rem);
+    transform: translateX(-0.25rem);
     margin-bottom: clamp(1.25rem, 5.9vh, 3rem);
 }
 /* El logo se achica en pantallas angostas o bajas */
 .kai-login-logo img {
-    width: max(49px, min(95px, 20.8vw, 11.3vh)) !important;
+    width: max(40px, min(76px, 16.6vw, 9vh)) !important;
     height: auto !important;
 }
 .kai-login-logo > span {
-    font-size: max(40px, min(79px, 17vw, 9.4vh)) !important;
+    font-size: max(32px, min(63px, 13.6vw, 7.5vh)) !important;
 }
 [data-testid="stForm"] label p {
     font-size: 0.95rem;

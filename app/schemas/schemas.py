@@ -101,6 +101,38 @@ class EstadisticasAparatosResponse(BaseModel):
 
 
 # --- Auth Schemas ---
+class InstalacionSolarCreate(BaseModel):
+    """Sistema solar que ya tiene el usuario: paneles, batería, inversor y perfil de consumo."""
+    potencia_panel_w: float = Field(..., gt=0, le=2000)
+    cantidad_paneles: int = Field(..., ge=1, le=10000)
+    orientacion: str = Field("sur", pattern="^(sur|sureste|suroeste|este_oeste|personalizada)$")
+    azimut_grados: Optional[float] = Field(None, ge=0, lt=360)
+    inclinacion_grados: Optional[float] = Field(None, ge=0, le=90)
+    tipo_panel: Optional[str] = Field(None, max_length=60)
+    tiene_bateria: bool = False
+    quimica_bateria: Optional[str] = Field(None, max_length=60)
+    voltaje_banco_v: Optional[float] = Field(None, gt=0, le=1500)
+    capacidad_ah: Optional[float] = Field(None, gt=0, le=100000)
+    soc_pct: Optional[float] = Field(None, ge=0, le=100)
+    dod_pct: Optional[float] = Field(None, gt=0, le=100)
+    eficiencia_ciclo_pct: Optional[float] = Field(None, gt=0, le=100)
+    potencia_descarga_w: Optional[float] = Field(None, gt=0, le=1000000)
+    potencia_inversor_w: Optional[float] = Field(None, gt=0, le=1000000)
+    eficiencia_inversor_pct: Optional[float] = Field(None, gt=0, le=100)
+    rendimiento_pr_pct: Optional[float] = Field(None, gt=0, le=100)
+    potencia_pv_max_w: Optional[float] = Field(None, gt=0, le=1000000)
+    consumo_diario_kwh: Optional[float] = Field(None, ge=0, le=100000)
+    demanda_diurna_kwh: Optional[float] = Field(None, ge=0, le=100000)
+    demanda_nocturna_kwh: Optional[float] = Field(None, ge=0, le=100000)
+    carga_base_w: Optional[float] = Field(None, ge=0, le=1000000)
+
+    @model_validator(mode="after")
+    def _bateria_completa(self):
+        if self.tiene_bateria and (not self.voltaje_banco_v or not self.capacidad_ah):
+            raise ValueError("Para la batería indica el voltaje del banco y su capacidad en Ah")
+        return self
+
+
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
@@ -112,6 +144,9 @@ class UserCreate(BaseModel):
     tipo_empresa: Optional[str] = None
     tarifa_kwh: Optional[float] = None
     tipo_entidad: Optional[TipoEntidad] = None
+    capacidad_paneles_kw: Optional[float] = Field(None, ge=0, le=5000)  # 'Tengo paneles solares' en el registro
+    capacidad_bateria_kwh: Optional[float] = Field(None, ge=0, le=5000)
+    instalacion: Optional[InstalacionSolarCreate] = None  # pantalla 'Tengo paneles solares'
     aparatos: List[AparatoUsuarioCreate] = Field(default_factory=list, max_length=200)
 
 

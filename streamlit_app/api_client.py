@@ -128,6 +128,9 @@ def register(
     tarifa_kwh: Optional[float] = None,
     tipo_entidad: Optional[str] = None,
     aparatos: Optional[List[Dict]] = None,
+    capacidad_paneles_kw: Optional[float] = None,
+    capacidad_bateria_kwh: Optional[float] = None,
+    instalacion: Optional[Dict] = None,
 ) -> bool:
     """Registra un nuevo usuario en la API."""
     try:
@@ -142,6 +145,9 @@ def register(
             "tarifa_kwh": tarifa_kwh,
             "tipo_entidad": tipo_entidad,
             "aparatos": aparatos or [],
+            "capacidad_paneles_kw": capacidad_paneles_kw,
+            "capacidad_bateria_kwh": capacidad_bateria_kwh,
+            "instalacion": instalacion,
         }
         resp = requests.post(
             f"{API_BASE_URL}{API_PREFIX}/auth/register",
